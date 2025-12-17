@@ -9,6 +9,9 @@
     "48": "images/icon-48.png",
     "128": "images/icon-128.png"
   },
+  "permissions": [
+    "storage"
+  ],
   "action": {
     "default_popup": "popup/popup.html"
   },
