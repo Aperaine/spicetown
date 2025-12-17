@@ -58,10 +58,11 @@ function applySettingsSync() {
       console.log(value);
       if (value) {
         const apiKeyDisplay = document.querySelector(".api-key-display");
-        var censored = true;
         if (!apiKeyDisplay) {
           return;
         }
+        var censored = true;
+        var apiKey = apiKeyDisplay.textContent;
         apiKeyDisplay.style.transition = "none";
         apiKeyDisplay.style.filter = "blur(0px)";
         apiKeyDisplay.style.background = "black";
@@ -70,6 +71,7 @@ function applySettingsSync() {
         apiKeyDisplay.style.msUserSelect = "none";
         apiKeyDisplay.style.userSelect = "none";
         apiKeyDisplay.style.cursor = "pointer";
+        apiKeyDisplay.textContent = "";
         apiKeyDisplay.addEventListener('mouseleave', (e) => {
           e.stopImmediatePropagation();
         }, true);
@@ -81,6 +83,7 @@ function applySettingsSync() {
             apiKeyDisplay.style.WebkitUserSelect = "text";
             apiKeyDisplay.style.msUserSelect = "text";
             apiKeyDisplay.style.userSelect = "text";
+            apiKeyDisplay.textContent = apiKey;
           } else {
             censored = true;
             apiKeyDisplay.style.background = "black";
@@ -88,6 +91,7 @@ function applySettingsSync() {
             apiKeyDisplay.style.WebkitUserSelect = "none";
             apiKeyDisplay.style.msUserSelect = "none";
             apiKeyDisplay.style.userSelect = "none";
+            apiKeyDisplay.textContent = "";
           }
         }, true);
       }
