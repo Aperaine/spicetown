@@ -12,36 +12,40 @@ function initialize() {
   const settingsForm = document.querySelector(".settings-form");
   const modalActions = settingsForm.querySelector(".modal__actions");
   const saveBtn = modalActions.querySelector(".modal__actions-close");
-  if (settingsForm && modalActions && saveBtn) {
-    const screenshareModeDiv = document.createElement("div");
-    screenshareModeDiv.classList.add("settings-form__field");
 
-    const screenshareModeCheckbox = document.createElement("label");
-    screenshareModeCheckbox.classList.add("settings-form__checkbox");
-    screenshareModeDiv.appendChild(screenshareModeCheckbox);
+  if (!settingsForm || !modalActions || !saveBtn) return;
 
-    const screenshareModeBoxInput = document.createElement("input");
-    screenshareModeBoxInput.type = "checkbox";
-    screenshareModeBoxInput.name = "screenshare_mode";
-    screenshareModeBoxInput.id = "screenshare_mode";
-    screenshareModeBoxInput.value = 1;
-    screenshareModeCheckbox.appendChild(screenshareModeBoxInput);
+  const screenshareModeDiv = document.createElement("div");
+  screenshareModeDiv.classList.add("settings-form__field");
 
-    const screenshareModeTitle = document.createElement("span");
-    screenshareModeTitle.textContent = "Screenshare Mode"
-    screenshareModeCheckbox.appendChild(screenshareModeTitle);
+  const screenshareModeCheckbox = document.createElement("label");
+  screenshareModeCheckbox.classList.add("settings-form__checkbox");
+  screenshareModeDiv.appendChild(screenshareModeCheckbox);
 
-    const screenshareModeHint = document.createElement("small");
-    screenshareModeHint.classList.add("settings-form__hint");
-    screenshareModeHint.textContent = "Replace sensitive information blurring with secure, black boxes"
-    screenshareModeDiv.appendChild(screenshareModeHint);
+  const screenshareModeBoxInput = document.createElement("input");
+  screenshareModeBoxInput.type = "checkbox";
+  screenshareModeBoxInput.name = "screenshare_mode";
+  screenshareModeBoxInput.id = "screenshare_mode";
+  screenshareModeBoxInput.value = 1;
+  screenshareModeCheckbox.appendChild(screenshareModeBoxInput);
 
-    settingsForm.insertBefore(screenshareModeDiv, modalActions);
+  const screenshareModeTitle = document.createElement("span");
+  screenshareModeTitle.textContent = "Screenshare Mode"
+  screenshareModeCheckbox.appendChild(screenshareModeTitle);
 
-    saveBtn.addEventListener("click", function() {
-      saveSetting(screenshareModeBoxInput.checked);
-    });
-  }
+  const screenshareModeHint = document.createElement("small");
+  screenshareModeHint.classList.add("settings-form__hint");
+  screenshareModeHint.textContent = "Replace sensitive information blurring with secure, black boxes"
+  screenshareModeDiv.appendChild(screenshareModeHint);
+
+  settingsForm.insertBefore(screenshareModeDiv, modalActions);
+
+  saveBtn.addEventListener("click", function() {
+    saveSetting(screenshareModeBoxInput.checked);
+  });
+
+  applySettingsSync();
+  applyUISync();
 }
 
 function saveSetting(value) {
@@ -55,49 +59,39 @@ function applySettingsSync() {
       const screenshareModeCheckbox = document.getElementById('screenshare_mode');
       if (!screenshareModeCheckbox) return;
       screenshareModeCheckbox.checked = value;
-      console.log(value);
-      if (value) {
-        const apiKeyDisplay = document.querySelector(".api-key-display");
-        if (!apiKeyDisplay) {
-          return;
+    }
+  })
+}
+
+function applyUISync() {
+  chrome.storage.local.get(['screenshareMode'], function(result) {
+    let value = result.screenshareMode;
+    if (value !== undefined && value) {
+      const apiKeyDisplay = document.querySelector(".api-key-display");
+      if (!apiKeyDisplay) return;
+      let censored = true;
+      let apiKey = apiKeyDisplay.textContent;
+      apiKeyDisplay.classList.add("api-key-display-secure");
+      apiKeyDisplay.classList.add("api-key-display-censored");
+      apiKeyDisplay.textContent = "";
+      apiKeyDisplay.addEventListener('mouseleave', (e) => {
+        e.stopImmediatePropagation();
+      }, true);
+      apiKeyDisplay.addEventListener('mouseup', () => {
+        if (censored) {
+          censored = false;
+          apiKeyDisplay.classList.remove("api-key-display-censored");
+          apiKeyDisplay.classList.add("api-key-display-visible");
+          apiKeyDisplay.textContent = apiKey;
+        } else {
+          censored = true;
+          apiKeyDisplay.classList.remove("api-key-display-visible");
+          apiKeyDisplay.classList.add("api-key-display-censored");
+          apiKeyDisplay.textContent = "";
         }
-        var censored = true;
-        var apiKey = apiKeyDisplay.textContent;
-        apiKeyDisplay.style.transition = "none";
-        apiKeyDisplay.style.filter = "blur(0px)";
-        apiKeyDisplay.style.background = "black";
-        apiKeyDisplay.style.color = "black";
-        apiKeyDisplay.style.WebkitUserSelect = "none";
-        apiKeyDisplay.style.msUserSelect = "none";
-        apiKeyDisplay.style.userSelect = "none";
-        apiKeyDisplay.style.cursor = "pointer";
-        apiKeyDisplay.textContent = "";
-        apiKeyDisplay.addEventListener('mouseleave', (e) => {
-          e.stopImmediatePropagation();
-        }, true);
-        apiKeyDisplay.addEventListener('mouseup', () => {
-          if (censored) {
-            censored = false;
-            apiKeyDisplay.style.background = "none";
-            apiKeyDisplay.style.color = "var(--color-text-body)";
-            apiKeyDisplay.style.WebkitUserSelect = "text";
-            apiKeyDisplay.style.msUserSelect = "text";
-            apiKeyDisplay.style.userSelect = "text";
-            apiKeyDisplay.textContent = apiKey;
-          } else {
-            censored = true;
-            apiKeyDisplay.style.background = "black";
-            apiKeyDisplay.style.color = "black";
-            apiKeyDisplay.style.WebkitUserSelect = "none";
-            apiKeyDisplay.style.msUserSelect = "none";
-            apiKeyDisplay.style.userSelect = "none";
-            apiKeyDisplay.textContent = "";
-          }
-        }, true);
-      }
+      }, true);
     }
   })
 }
 
 initialize();
-applySettingsSync();

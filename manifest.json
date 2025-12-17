@@ -21,6 +21,12 @@
       "matches": [
         "https://flavortown.hackclub.com/*"
       ]
+    },
+    {
+      "css": ["scripts/content.css"],
+      "matches": [
+        "https://flavortown.hackclub.com/*"
+      ]
     }
   ],
   "web_accessible_resources": [
