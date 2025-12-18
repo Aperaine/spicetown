@@ -1,3 +1,5 @@
+let apiKey = "Wait! We're trying to obtain the API Key for you..."
+
 function initialize() {
   const topCollabDiv = document.querySelector(".top-collab img");
   if (topCollabDiv) {
@@ -51,16 +53,70 @@ async function addSpicetownSettings() {
 
   settingsForm.insertBefore(screenshareModeDiv, modalActions);
 
-  // theming menu
-  const themingMenuBtn = document.createElement("button");
-  themingMenuBtn.classList.add("theming-menu__btn");
-  themingMenuBtn.textContent = "Themes"
-
-  settingsForm.insertBefore(themingMenuBtn, modalActions);
-
   saveBtn.addEventListener("click", function() {
     saveSetting(screenshareModeBoxInput.checked);
   });
+
+  // settings v2
+  const apiKeyDisplay = document.querySelector(".api-key-display");
+  if (apiKeyDisplay) {
+    const apiKeyContainer = apiKeyDisplay.parentElement
+    const apiKeyDiv = apiKeyContainer.parentElement;
+    apiKeyDiv.classList.add("api-key__div");
+
+    const rerollApiForm = apiKeyContainer.querySelector("form.button_to");
+
+    const rerollApiHeading = document.createElement("div");
+    rerollApiHeading.classList.add("api-key-info__div")
+    apiKeyDiv.insertBefore(rerollApiHeading, apiKeyContainer);
+
+    const rerollApiLabel = apiKeyDiv.querySelector("label.settings-form__label");
+
+    rerollApiHeading.appendChild(rerollApiLabel);
+    rerollApiHeading.appendChild(rerollApiForm);
+
+    const rerollApiBtn = rerollApiForm.querySelector("button");
+    rerollApiBtn.style.background = "none";
+    rerollApiBtn.style.border = "none";
+    rerollApiBtn.style.cursor = "pointer";
+
+    const rerollApiSvg = rerollApiForm.querySelector("svg");
+    rerollApiSvg.style.color = "var(--color-text-body)";
+
+    const copyApiBtn = document.createElement("button");
+    copyApiBtn.style.height = "24px";
+    copyApiBtn.style.background = "none";
+    copyApiBtn.style.border = "none";
+    copyApiBtn.style.cursor = "pointer";
+    copyApiBtn.addEventListener("click", function() {
+      navigator.clipboard.writeText(apiKey);
+      document.getElementById('settings-modal').close();
+    });
+
+    apiKeyContainer.appendChild(copyApiBtn);
+
+    const copyApiSvg = rerollApiSvg.cloneNode(false);
+    rerollApiSvg.style.width = "16";
+    rerollApiSvg.style.height = "16";
+    copyApiBtn.appendChild(copyApiSvg);
+
+    const copyApiSvgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    copyApiSvgRect.setAttribute("width", "14");
+    copyApiSvgRect.setAttribute("height", "14");
+    copyApiSvgRect.setAttribute("x", "8");
+    copyApiSvgRect.setAttribute("y", "8");
+    copyApiSvgRect.setAttribute("rx", "2");
+    copyApiSvgRect.setAttribute("ry", "2");
+    copyApiSvg.appendChild(copyApiSvgRect);
+
+    const copyApiSvgPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    copyApiSvgPath.setAttribute("d", "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2");
+    copyApiSvg.appendChild(copyApiSvgPath);
+  }
+  
+  // theming menu
+  
+  // TODO: Theming menu :shocked:
 }
 
 function addBannerTemplateHint() {
@@ -98,9 +154,10 @@ function applySettingsSync() {
 
       if (apiKeyDisplay) {
         let censoredA = true;
-        const apiKey = apiKeyDisplay.textContent;
+        apiKey = apiKeyDisplay.textContent;
 
         initializeCensor(apiKeyDisplay);
+        apiKeyDisplay.textContent = str_rand(6); // haha funny number
 
         apiKeyDisplay.addEventListener('mouseleave', (e) => {
           e.stopImmediatePropagation();
@@ -113,6 +170,7 @@ function applySettingsSync() {
           } else {
             censoredA = true;
             applyCensor(apiKeyDisplay);
+            apiKeyDisplay.textContent = str_rand(7); // HAHAHAHA FUNNI NUMBERRRRR (kys if you laughed /j)
           }
         }, true);
       }

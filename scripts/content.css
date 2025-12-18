@@ -49,3 +49,18 @@
   flex: 1 0 50%;
   margin: 0;
 }
+
+.api-key__div {
+  margin-top: 1.5rem;
+}
+
+.api-key-info__div {
+  display: flex;
+  flex-direction: row;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.api-key-container {
+  align-items: center;
+}
