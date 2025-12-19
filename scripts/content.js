@@ -244,17 +244,35 @@ function addThemesPage() {
             <h2>Background Color</h2>
             <p>Customize the background color</p>
           </div>
-          <div class="themes__div-options-container">
-            <div class="themes__div-option">
+          <div class="themes__div-options-container" id="bg-color-container">
+            <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-vanilla">
               <p class="themes__div-option-name">Vanilla</p>
             </div>
-            <div class="themes__div-option">
+            <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-ruby">
               <p class="themes__div-option-name">Ruby</p>
             </div>
           <div>
         </div>
       </div>
     `;
+
+    const el = {
+      bgColorContainer: document.getElementById("bg-color-container"),
+      bgColorOptions: document.querySelectorAll(".themes__div-option--bg-color"),
+      bgColorVanilla: document.getElementById("bg-color-vanilla")
+    }
+
+    for (i = 0; i < el.bgColorOptions.length; i++) {
+      el.bgColorOptions[i].addEventListener('click', selectBgColorOption);
+    }
+
+    function selectBgColorOption(event) {
+      const options = document.querySelectorAll('.themes__div-option--bg-color');
+      Array.prototype.forEach.call(options, function (el) {
+        el.setAttribute("selected", false);
+      });
+      event.currentTarget.setAttribute("selected", true);
+    }
   }
 }
 
