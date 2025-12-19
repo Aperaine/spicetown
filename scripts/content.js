@@ -230,6 +230,30 @@ function addThemesPage() {
             </nav>
           </div>
       </aside>
+      <div class="themes">
+        <div class="ui-heading ui-heading--orange">
+          <div class="ui-heading__stack">
+            <span class="ui-heading__backdrop" aria-hidden="true"></span>
+            <div class="ui-heading__surface">
+              <h1 class="ui-heading__title">Themes</h1>
+            </div>
+          </div>
+        </div>
+        <div class="themes__div-container">
+          <div class="themes__div-label-container">
+            <h2>Background Color</h2>
+            <p>Customize the background color</p>
+          </div>
+          <div class="themes__div-options-container">
+            <div class="themes__div-option">
+              <p class="themes__div-option-name">Vanilla</p>
+            </div>
+            <div class="themes__div-option">
+              <p class="themes__div-option-name">Ruby</p>
+            </div>
+          <div>
+        </div>
+      </div>
     `;
   }
 }

@@ -1,3 +1,8 @@
+:root {
+  --color-orange-400: oklch(75% 0.183 55.934);
+  --color-orange-500: oklch(70.5% 0.213 47.604);
+}
+
 .api-key-display-secure {
   filter: blur(0px) !important;
   transition: none !important;
@@ -63,4 +68,70 @@
 
 .api-key-container {
   align-items: center;
+}
+
+.themes {
+  margin: var(--space-xxxl) auto;
+}
+
+.themes .ui-heading {
+  margin-bottom: var(--space-xl);
+}
+
+.ui-heading--orange .ui-heading__backdrop {
+  background-color: var(--color-orange-400);
+}
+
+.ui-heading--orange .ui-heading__surface {
+  background-color: var(--color-orange-500);
+}
+
+.themes__div-container {
+  margin-top: var(--space-xl);
+  position: relative;
+  border-radius: var(--border-radius);
+  padding: var(--space-xl);
+  background: var(--color-tan-300);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.themes__div-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-bg);
+  background-image: repeating-conic-gradient(from 0deg, rgba(0, 0, 0, 0.04) 0deg 90deg, transparent 90deg 180deg);
+  background-size: 120px 120px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.themes__div-container > div {
+  position: relative;
+}
+
+.themes__div-label-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.themes__div-options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-grow: 1;
+}
+
+.themes__div-option {
+  padding: 1rem;
+  border: 2px solid var(--color-tan-400);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  background: var(--color-tan-300) url(/assets/landing/hero/hero-bg-59d6bbf0.webp) repeat center center / 1200px;
+  cursor: pointer;
 }
