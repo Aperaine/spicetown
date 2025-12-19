@@ -170,3 +170,7 @@
   pointer-events: none;
   z-index: 1;
 } */
+
+.report-btn {
+  transition: all .2s ease !important;
+}
