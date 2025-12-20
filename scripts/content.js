@@ -149,22 +149,29 @@ function addExtraProjectInfo() {
 }
 
 function addImprovedShop() {
-  const shopGoalsItemsDiv = document.querySelector(".shop-goals__items");
-  if (!shopGoalsItemsDiv) return;
-
   const shopGoalsItems = document.querySelectorAll(".shop-goals__item");
+  if (!shopGoalsItems) return;
+
+  const sidebarBalance = document.querySelector(".sidebar__user-balance");
+  const userBalance = sidebarBalance ? parseFloat(sidebarBalance.textContent.replace(/[^\d.]/g, '')) : 0;
 
   shopGoalsItems.forEach(shopGoalItemDiv => {
+    const shopGoalItemID = shopGoalItemDiv.getAttribute("data-item-id");
     const shopGoalsLink = shopGoalItemDiv.querySelector(".shop-goals__link");
     const shopGoalsProgressTxt = shopGoalItemDiv.querySelector(".shop-goals__progress-text");
     const shopGoalsProgressBarFill = shopGoalItemDiv.querySelector(".shop-goals__progress-fill");
     const shopGoalsRemoveBtn = shopGoalItemDiv.querySelector(".shop-goals__remove");
 
-    const remainingCookies = parseFloat(shopGoalsProgressTxt.textContent.replace(/[^\d.]/g, ''));
-    const currentPercent = parseFloat(shopGoalsProgressBarFill.style.width) || 0;
+    const progressTxtContent = shopGoalsProgressTxt.textContent.toLowerCase();
+    let remainingCookies = 0;
 
-    const totalCookies = Math.round(remainingCookies / (1 - (currentPercent / 100)));
-    const cookiesAlreadyOwned = totalCookies - remainingCookies;
+    const shopGoalIsComplete = shopGoalsProgressBarFill.style.width === "100%" || progressTxtContent.includes("completed");
+
+    if (!shopGoalIsComplete) {
+      remainingCookies = parseFloat(shopGoalsProgressTxt.textContent.replace(/[^\d.]/g, '')) || 0;
+    }
+
+    const pricePerUnit = remainingCookies + userBalance;
 
     const shopGoalActionsDiv = document.createElement("div");
     shopGoalActionsDiv.classList.add("shop-goals-action__div");
@@ -175,28 +182,27 @@ function addImprovedShop() {
     itemQuantityInput.type = "number";
     itemQuantityInput.min = "1";
 
-    chrome.storage.local.get([`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`], result => {
-      if (result[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`]) {
-        itemQuantityInput.value = result[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`];
-      } else {
-        itemQuantityInput.value = 1;
-      }
-    })
-
     const updateShopItemPrice = () => {
       const quantity = parseInt(itemQuantityInput.value) || 1;
-      const newTotalRequired = totalCookies * quantity;
-      const newRemaining = newTotalRequired - cookiesAlreadyOwned;
-      const newPercent = (cookiesAlreadyOwned / newTotalRequired) * 100;
+      const newTotalRequired = pricePerUnit * quantity;
+      const newRemaining = Math.max(0, newTotalRequired - userBalance);
+      const newPercent = Math.max(0, ((userBalance / newTotalRequired) * 100));
 
-      shopGoalsProgressTxt.textContent = `🍪${newRemaining.toLocaleString()} more needed`;
+      if (newRemaining <= 0) {
+        shopGoalsProgressTxt.textContent = `✅ Ready to buy!`;
+        shopGoalsProgressBarFill.classList.add("shop-goals__progress-fill--complete");
+      } else {
+        shopGoalsProgressTxt.textContent = `🍪${newRemaining.toLocaleString()} more needed`;
+        shopGoalsProgressBarFill.classList.remove("shop-goals__progress-fill--complete");
+      }
+
       shopGoalsProgressBarFill.style.width = `${newPercent}%`;
 
-      chrome.storage.local.set({[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`]: itemQuantityInput.value});
+      chrome.storage.local.set({[`shop_goal_qty_${shopGoalItemID}`]: quantity});
     }
 
-    chrome.storage.local.get([`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`], result => {
-      const savedQuantity = result[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`];
+    chrome.storage.local.get([`shop_goal_qty_${shopGoalItemID}`], result => {
+      const savedQuantity = result[`shop_goal_qty_${shopGoalItemID}`];
       itemQuantityInput.value = savedQuantity || 1;
       updateShopItemPrice();
     });
