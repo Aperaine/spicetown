@@ -24,6 +24,7 @@ function initialize() {
   // non settings related
   addImprovedUI();
   addExtraProjectInfo();
+  addImprovedShop();
   addAchievementInfo();
   addThemesPage();
   addBannerTemplateHint();
@@ -145,6 +146,66 @@ function addExtraProjectInfo() {
       timePerDaySpan.textContent = "(?)"
     }
   }
+}
+
+function addImprovedShop() {
+  const shopGoalsItemsDiv = document.querySelector(".shop-goals__items");
+  if (!shopGoalsItemsDiv) return;
+
+  const shopGoalsItems = document.querySelectorAll(".shop-goals__item");
+
+  shopGoalsItems.forEach(shopGoalItemDiv => {
+    const shopGoalsLink = shopGoalItemDiv.querySelector(".shop-goals__link");
+    const shopGoalsProgressTxt = shopGoalItemDiv.querySelector(".shop-goals__progress-text");
+    const shopGoalsProgressBarFill = shopGoalItemDiv.querySelector(".shop-goals__progress-fill");
+    const shopGoalsRemoveBtn = shopGoalItemDiv.querySelector(".shop-goals__remove");
+
+    const remainingCookies = parseFloat(shopGoalsProgressTxt.textContent.replace(/[^\d.]/g, ''));
+    const currentPercent = parseFloat(shopGoalsProgressBarFill.style.width) || 0;
+
+    const totalCookies = Math.round(remainingCookies / (1 - (currentPercent / 100)));
+    const cookiesAlreadyOwned = totalCookies - remainingCookies;
+
+    const shopGoalActionsDiv = document.createElement("div");
+    shopGoalActionsDiv.classList.add("shop-goals-action__div");
+    shopGoalItemDiv.insertBefore(shopGoalActionsDiv, shopGoalsLink);
+
+    const itemQuantityInput = document.createElement("input");
+    itemQuantityInput.classList.add("shop-goals-quantity__input");
+    itemQuantityInput.type = "number";
+    itemQuantityInput.min = "1";
+
+    chrome.storage.local.get([`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`], result => {
+      if (result[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`]) {
+        itemQuantityInput.value = result[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`];
+      } else {
+        itemQuantityInput.value = 1;
+      }
+    })
+
+    const updateShopItemPrice = () => {
+      const quantity = parseInt(itemQuantityInput.value) || 1;
+      const newTotalRequired = totalCookies * quantity;
+      const newRemaining = newTotalRequired - cookiesAlreadyOwned;
+      const newPercent = (cookiesAlreadyOwned / newTotalRequired) * 100;
+
+      shopGoalsProgressTxt.textContent = `🍪${newRemaining.toLocaleString()} more needed`;
+      shopGoalsProgressBarFill.style.width = `${newPercent}%`;
+
+      chrome.storage.local.set({[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`]: itemQuantityInput.value});
+    }
+
+    chrome.storage.local.get([`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`], result => {
+      const savedQuantity = result[`shop_goal_qty_${shopGoalItemDiv.getAttribute("data-item-id")}`];
+      itemQuantityInput.value = savedQuantity || 1;
+      updateShopItemPrice();
+    });
+
+    itemQuantityInput.addEventListener("input", updateShopItemPrice);
+
+    shopGoalActionsDiv.appendChild(itemQuantityInput);
+    shopGoalActionsDiv.appendChild(shopGoalsRemoveBtn);
+  });
 }
 
 function addAchievementInfo() {

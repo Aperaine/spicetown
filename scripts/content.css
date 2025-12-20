@@ -232,3 +232,20 @@
 .project-extra-info__rating--okay {
   color: var(--color-yellow-400);
 }
+
+.shop-goals__remove {
+  position: static !important;
+  top: 0 !important;
+  right: 0 !important;
+}
+
+.shop-goals-action__div {
+  display: flex;
+  flex-direction: row;
+  gap: .25rem;
+  margin-bottom: 1rem;
+}
+
+.shop-goals-quantity__input {
+  margin-right: auto;
+}
