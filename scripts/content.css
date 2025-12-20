@@ -275,20 +275,20 @@
   filter: blur(1.5px);
 }
 
-.ruby-modified.state-card--success > .state-card__title {
+.ruby-modified.state-card--success .state-card__title {
   color: hsl(0deg 88.47% 14.28%) !important;
 }
 
-.ruby-modified.state-card--success > .state-card__description {
+.ruby-modified.state-card--success .state-card__description {
   color: hsl(0deg 100% 14.25%) !important;
 }
 
-.ruby-modified.state-card--success > .state-card__status-pill > .state-card__badge {
+.ruby-modified.state-card--success .state-card__badge {
   background: hsl(0deg 82.42% 22.09%) !important;
   color: hsl(0deg 88.47% 14.28%) !important;
 }
 
-.ruby-modified.state-card--success > .state-card__status-pill > .state-card__icon-circle {
+.ruby-modified.state-card--success .state-card__icon-circle {
   background: hsl(0deg 82.42% 22.09%) !important;
 }
 
@@ -298,19 +298,51 @@
   border-color: hsl(0deg 78.22% 27.48%) !important;
 }
 
-.ruby-modified.state-card--warning > .state-card__title, .ruby-modified.state-card--neutral > .state-card__title {
+.ruby-modified.state-card--warning .state-card__title, .ruby-modified.state-card--neutral .state-card__title {
   color: hsl(0deg 0% 100%) !important;
 }
 
-.ruby-modified.state-card--warning > .state-card__description, .ruby-modified.state-card--neutral > .state-card__description {
+.ruby-modified.state-card--warning .state-card__description, .ruby-modified.state-card--neutral .state-card__description {
   color: #d4d4d4ff !important;
 }
 
-.ruby-modified.state-card--warning > .state-card__status-pill > .state-card__badge {
+.ruby-modified.state-card--warning .state-card__badge {
   background: hsl(0deg 78.57% 27.45%) !important;
   color: white;
 }
 
-.ruby-modified.state-card--warning > .state-card__status-pill > .state-card__icon-circle {
+.ruby-modified.state-card--warning .state-card__icon-circle {
   background: hsl(0deg 78.57% 27.45%) !important;
+}
+
+.ruby-modified.post {
+  background-color: #650a0a !important;
+  border-color: #591212 !important;
+}
+
+.ruby-modified.post::after {
+  background-color: #650a0a !important;
+  border-color: #591212 !important;
+}
+
+.ruby-modified.post .post__attachment {
+  background-color: #591212 !important;
+}
+
+.ruby-modified.post .comment-form__input {
+  background-color: #591212 !important;
+  color: #f5d0d0 !important;
+}
+
+.ruby-modified.post .btn {
+  border-color: hsl(0, 88%, 16%) !important; 
+}
+
+.ruby-modified.post .post__chevron {
+  background-color: #591212 !important;
+}
+
+.ruby-modified.post .comments-section__list {
+  background-color: #591212 !important;
+  color: #f5d0d0 !important;
 }

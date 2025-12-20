@@ -564,6 +564,12 @@ function applyTheme(themeId) {
         kitchenHelpCard.classList.add("ruby-modified");
       });
     }
+    if (document.querySelector(".explore__nav")) {
+      document.querySelector(".explore__nav").style.backgroundColor = "#650a0a";
+      document.querySelectorAll(".post").forEach(post => {
+        post.classList.add("ruby-modified");
+      });
+    }
     document.body.style.backgroundImage = 'url("'+ chrome.runtime.getURL("/themes/bg-color/ruby/bg.png") + '")'
     if (document.querySelector(".projects-board__title")) {
       document.querySelector(".projects-board__title").style.color = "white";
