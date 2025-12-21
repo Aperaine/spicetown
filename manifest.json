@@ -28,5 +28,13 @@
       "resources": ["images/*.png", "download/*.png", "themes/*"],
       "matches": ["<all_urls>"] 
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{7e67ead6-7420-4202-8140-4695a3b8ab5d}",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
 }
