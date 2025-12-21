@@ -287,9 +287,9 @@
   --create-project-url: url("https://i.ibb.co/0RB40Sgg/aaa-1x.webp");
 }
 
-/** CATPUCCIN MOCHA THEME **/
+/** catppuccin MOCHA THEME **/
 
-[data-theme="bg-color-catpuccin-mocha"] {
+[data-theme="bg-color-catppuccin-mocha"] {
   --bg-primary: #1e1e2e;
   --text-primary: #bac2de;
   --text-highlight: #cdd6f4;
@@ -312,6 +312,35 @@
   --input-main-bg: #6a93d4;
   --input-sub-bg: #4e79be;
   --input-sub-text: #bac2de;
+
+  --create-project-url: url("https://i.ibb.co/V04Z5R31/Mask-group-10.png");
+}
+
+/** catppuccin MACCHIATO THEME **/
+
+[data-theme="bg-color-catppuccin-macchiato"] {
+  --bg-primary: #24273a;
+  --text-primary: #e0e3f1;
+  --text-highlight: #d1d6e9;
+
+  --surface-header: #494d64;
+  --surface-header-backdrop: #5b6078;
+  --surface-card: #6e738d;
+  --surface-dark: #363a4f;
+
+  --accent: #b88bee;
+  --accent-darker: #9d64e2;
+  --border-color: #a166e9;
+  --accent-muted: #a69ab4;
+  --accent-semi-transparent: hsla(267, 68%, 73%, 0.3);
+
+  --kitchen-bar-border: #b88bf0;
+  --kitchen-bar-bg: #d8b8ff;
+  --kitchen-gradient: linear-gradient(90deg, #a166e9 0%, #b07fec 100%);
+
+  --input-main-bg: #b383ee;
+  --input-sub-bg: #9a5fe4;
+  --input-sub-text: #b8c0e0;
 
   --create-project-url: url("https://i.ibb.co/V04Z5R31/Mask-group-10.png");
 }

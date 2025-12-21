@@ -491,10 +491,13 @@ async function addThemesPage() {
               <p class="themes__div-option-name">Vanilla</p>
             </div>
             <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-ruby">
-              <p class="themes__div-option-name">Ruby [⚠️ WIP]</p>
+              <p class="themes__div-option-name">Ruby</p>
             </div>
-            <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-catpuccin-mocha">
-              <p class="themes__div-option-name">Catpuccin Mocha [⚠️ WIP]</p>
+            <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-catppuccin-mocha">
+              <p class="themes__div-option-name">Catppuccin Mocha</p>
+            </div>
+            <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-catppuccin-macchiato">
+              <p class="themes__div-option-name">Catppuccin Macchiato [⚠️ WIP]</p>
             </div>
           <div>
         </div>
