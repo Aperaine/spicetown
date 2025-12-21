@@ -395,7 +395,7 @@ async function addSpicetownSettings() {
   }
 }
 
-function addThemesPage() {
+async function addThemesPage() {
   if (window.location.pathname === "/themes") {
     document.head.querySelector("style").remove();
     document.title = "Flavortown";
@@ -405,8 +405,8 @@ function addThemesPage() {
     faviconLinkEl.setAttribute("type", "image/x-icon");
     faviconLinkEl.href = "https://flavortown.hackclub.com/assets/favicon-5ea28202.ico";
     document.head.appendChild(faviconLinkEl);
-    
-    document.head.innerHTML += `<link rel="stylesheet" href="https://flavortown.hackclub.com/assets/application-e01c3cfb.css" data-turbo-track="reload">`;
+ 
+    document.head.innerHTML += `<link rel="stylesheet" href="${await getFlavortownCSS()}" data-turbo-track="reload">`;
 
     document.body.classList.add("signed-in");
 
@@ -670,6 +670,26 @@ function convertMToFormat(mins) {
   let h = Math.floor(mins / 60);
   let m = Math.floor(mins % 60);
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+async function getFlavortownCSS() { // partially stolen from CoM, my other project :3
+  try {
+    const response = await fetch('https://flavortown.hackclub.com/');
+    const html = await response.text();
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const cssLink = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'))
+      .find(link => link.href.includes('application-') && link.href.endsWith('.css'));
+
+    if (cssLink) {
+      console.log(cssLink.href);
+      return cssLink.href;
+    }
+  } catch (err) {
+    console.error("wtf i couldnt get flavortown css THIS FUCKING WEBSITE GRRRRRRR; error: " + err);
+  }
 }
 
 initialize();
