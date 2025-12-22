@@ -344,7 +344,7 @@
   --input-sub-bg: #9a5fe4;
   --input-sub-text: #b8c0e0;
 
-  --create-project-url: url("https://i.ibb.co/V04Z5R31/Mask-group-10.png");
+  --create-project-url: url("https://i.ibb.co/jk0VpFYF/Mask-group-11.png");
   --projects-show-timeline-url: url('data:image/svg+xml,<svg width="8" height="90" viewBox="0 0 4 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="4" height="30" rx="2" fill="%23b88bee"/></svg>');
 }
 
@@ -462,6 +462,7 @@
 [data-theme] .project-show-card__banner.project-card__banner > .project-card__banner-frame {background-color: var(--accent) !important;}
 [data-theme] .project-show-card__banner.project-card__banner > .project-card__banner-frame.project-card__banner-frame > .project-card__banner-frame--placeholder {background: linear-gradient(135deg, var(--accent), var(--accent-darker)) !important;}
 
+[data-theme] .project-extra-info__rating {color: var(--text-primary);}
 [data-theme] .project-card__stats > h5 {
   background-color: var(--text-highlight) !important;
   color: var(--border-color) !important;
@@ -470,18 +471,11 @@
   color: var(--border-color) !important;
   filter: drop-shadow(5px 0 0 var(--text-highlight)) drop-shadow(-5px 0 0 var(--text-highlight)) drop-shadow(0 5px 0 var(--text-highlight)) drop-shadow(0 -5px 0 var(--text-highlight)) !important;
 }
-[data-theme] .project-show-card__title-text {
-  color: var(--accent) !important;
-}
-[data-theme] .project-extra-info__container > svg {
-  color: var(--text-highlight) !important;
-}
-[data-theme] .project-show-card__actions > .btn.btn--brown.btn--borderless {
-  color: var(--text-highlight) !important;
-}
-[data-theme] .projects-show__timeline::before {
-  background-image: var(--projects-show-timeline-url) !important;
-}
+[data-theme] .project-show-card__title-text {color: var(--accent) !important;}
+[data-theme] .project-extra-info__container > svg {color: var(--text-highlight) !important;}
+[data-theme] .project-show-card__actions > .btn.btn--brown.btn--borderless {color: var(--text-highlight) !important;}
+[data-theme] .projects-show__timeline::before {background-image: var(--projects-show-timeline-url) !important;}
+
 [data-theme] .state-card--success {
   --state-card-accent: var(--accent-darker) !important;
   background-color: var(--accent-darker) !important;
