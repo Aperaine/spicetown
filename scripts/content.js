@@ -154,6 +154,11 @@ function addImprovedShop() {
   const shopGoalsItems = document.querySelectorAll(".shop-goals__item");
   if (!shopGoalsItems) return;
 
+  const shopItemLink = document.querySelectorAll(".shop-item-card__link");
+  shopItemLink.forEach(linkEl => {
+    linkEl.target = "_blank";
+  });
+
   const sidebarBalance = document.querySelector(".sidebar__user-balance");
   const userBalance = sidebarBalance ? parseFloat(sidebarBalance.textContent.replace(/[^\d.]/g, '')) : 0;
 
