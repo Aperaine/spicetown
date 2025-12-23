@@ -254,17 +254,14 @@ function addImprovedShop() {
   allProgressWrapper.classList.add("shop-goals__all-progress-wrapper");
 
   allProgressWrapper.innerHTML = `
+    <span id="all-percent">0.00%</span>
     <div class="shop-goals__heading-progress-bar">
       <div class="shop-goals__heading-progress-bar-fill"></div>
     </div>
-    <div class="shop-goals__all-stats">
+    <div class="all-current__container">
       <span id="all-current">0</span> / <span id="all-total">0</span> 
     </div>
   `;
-
-  const allFill = allProgressWrapper.querySelector(".shop-goals__heading-progress-bar-fill");
-  const allCurrentText = allProgressWrapper.querySelector("#all-current");
-  const allTotalText = allProgressWrapper.querySelector("#all-total");
 
   const shopGoalEditorDiv = document.createElement("div");
   shopGoalEditorDiv.classList.add("shop-goals-editor__div");
@@ -294,6 +291,7 @@ function addImprovedShop() {
     const allFill = document.querySelector(".shop-goals__heading-progress-bar-fill");
     const allCurrentText = document.querySelector("#all-current");
     const allTotalText = document.querySelector("#all-total");
+    const allPercentText = document.querySelector("#all-percent");
 
     for (const item of shopGoalsItems) {
       const id = item.getAttribute("data-item-id");
@@ -331,6 +329,7 @@ function addImprovedShop() {
     if (allFill) allFill.style.width = `${percent}%`;
     if (allCurrentText) allCurrentText.textContent = Math.floor(userBalance).toLocaleString();
     if (allTotalText) allTotalText.textContent = Math.floor(totalRequiredCost).toLocaleString();
+    if (allPercentText) allPercentText.textContent = (Math.round((percent + Number.EPSILON) * 100) / 100).toLocaleString() + "%";
   }
 
   shopGoalsItems.forEach(shopGoalItemDiv => {
