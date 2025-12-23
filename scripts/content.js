@@ -265,7 +265,7 @@ function addImprovedShop() {
 
   const shopGoalEditorDiv = document.createElement("div");
   shopGoalEditorDiv.classList.add("shop-goals-editor__div");
-  shopGoalEditorDiv.style.display = "none";
+  shopGoalEditorDiv.style.visibility = "hidden";
 
   shopGoalEditorDiv.innerHTML = `
     <div class="shop-goal-editor__heading">
@@ -409,11 +409,10 @@ function addImprovedShop() {
         editorInput.value = result[`shop_goal_qty_${shopGoalItemID}`] || 1;
       });
 
-      shopGoalEditorDiv.style.display = "block";
+      shopGoalEditorDiv.style.visibility = "visible";
 
-      // select styling (coming soon!!!!!!!!!!!!!! trust)
-      // shopGoalsItems.forEach(i => i.style.outline = "none");
-      // shopGoalItemDiv.style.outline = "2px solid var(--color"
+      shopGoalsItems.forEach(item => item.classList.remove("selected"));
+      shopGoalItemDiv.classList.add("selected");
     });
   });
 
@@ -425,7 +424,7 @@ function addImprovedShop() {
       activeEditingItem.updateShopItemPrice(newQuantity);
       calculateAllProgress();
 
-      shopGoalEditorDiv.style.display = "none";
+      shopGoalEditorDiv.style.visibility = "hidden";
     });
   });
 
@@ -434,7 +433,7 @@ function addImprovedShop() {
     const originalRemoveBtn = activeEditingItem.div.querySelector(".shop-goals__remove");
     if (originalRemoveBtn) {
       originalRemoveBtn.click();
-      shopGoalEditorDiv.style.display = "none";
+      shopGoalEditorDiv.style.visibility = "hidden";
       activeEditingItem = null;
       window.location.reload();
     }

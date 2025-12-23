@@ -241,7 +241,6 @@
   top: 0 !important;
   right: 0 !important;
 }
-
 .shop-goals-action__div {
   display: flex;
   flex-direction: row;
@@ -258,7 +257,7 @@
   border-radius: 16px !important;
   box-shadow: var(--shadow);
   overflow: hidden;
-  transition: transform .2s ease, box-shadow .2s ease;
+  transition: transform .2s ease, box-shadow .2s ease, height .2 ease;
 }
 .shop-goals__container::before {
   content: "";
@@ -269,10 +268,10 @@
   z-index: 0;
   pointer-events: none;
 }
-.shop-goals__container:hover {
+/* .shop-goals__container:hover {
   box-shadow: 0px 8px 24px rgba(0, 0, 0, .15);
   transform: translateY(-6px);
-}
+} */
 .shop-goals__title {
   position: relative;
   color: #4d2b32 !important;
@@ -317,23 +316,36 @@
 .shop-goals__div {
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
   gap: 2rem;
   width: 100%;
 }
 .shop-goals__items {
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 1rem;
+  flex: 1 1 50%;
+}
+.shop-goals__items > .shop-goals__item {
+  flex: 1 1 calc(50% - 0.5rem);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .shop-goals__item {
   /* background: linear-gradient(135deg, var(--color-yellow-300) 0%, var(--color-yellow-400) 100%) !important; */
   max-width: 100% !important;
   transition: all 150ms ease;
 }
-.shop-goals__item:hover {
-  transform: scale(1.05) rotate(2.5deg);
+.shop-goals__item:hover:not(.selected) {
+  transform: scale(1.05);
 }
 .shop-goals__item:active {
   transition: all 20ms ease;
-  transform: scale(0.95) rotate(0deg);
+  transform: scale(0.98);
+}
+.selected.shop-goals__item {
+  box-shadow: 0 0 0 2px var(--color-bg);
+  z-index: 2;
+  position: relative;
 }
 .shop-goals__image {
   background-color: var(--color-yellow-450) !important;
@@ -343,7 +355,12 @@
   background-color: hsla(142, 71%, 45%) !important;
 }
 .shop-goals-editor__div {
-  flex-grow: 1;
+  flex: 0 0 50%;
+  position: sticky;
+  top: 1rem;
+  padding: 1rem 2rem;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 12px;
 }
 .shop-goal-editor__heading {
   display: flex;
