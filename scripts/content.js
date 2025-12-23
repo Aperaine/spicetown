@@ -717,6 +717,9 @@ async function addThemesPage() {
             <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-catppuccin-macchiato">
               <p class="themes__div-option-name">Catppuccin Macchiato [⚠️ WIP]</p>
             </div>
+            <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-charcoal">
+              <p class="themes__div-option-name">Charcoal</p>
+            </div>
           <div>
         </div>
       </div>
@@ -774,6 +777,12 @@ function applyTheme(themeId) {
       body.style.setProperty("--theme-bg-image", `url('https://i.ibb.co/C5mZtM9R/Mask-group-13.png')`);
       if (document.querySelector(".sidebar__user-avatar-hat-bg")) {
         document.querySelector(".sidebar__user-avatar-hat-bg").src = "https://i.ibb.co/zhK0H9KW/Mask-group-16.png";
+      }
+    } else if (themeId === "bg-color-charcoal") {
+      const bgUrl = chrome.runtime.getURL("/themes/bg-color/charcoal/bg.png");
+      body.style.setProperty("--theme-bg-image", `url('${bgUrl}')`);
+      if (document.querySelector(".sidebar__user-avatar-hat-bg")) {
+        document.querySelector(".sidebar__user-avatar-hat-bg").src = "https://i.ibb.co/YBF6TqZ0/Mask-group-19.png";
       }
     }
   }
