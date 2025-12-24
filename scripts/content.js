@@ -970,6 +970,9 @@ async function addThemesPage() {
             <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-charcoal">
               <p class="themes__div-option-name">Charcoal <small>(by Aperaine)</small></p>
             </div>
+            <div class="themes__div-option themes__div-option--bg-color" name="bg-color-option" id="bg-color-leafy">
+              <p class="themes__div-option-name">Leafy</p>
+            </div>
           <div>
         </div>
       </div>
@@ -1033,6 +1036,11 @@ function applyTheme(themeId) {
       body.style.setProperty("--theme-bg-image", `url('${bgUrl}')`);
       if (document.querySelector(".sidebar__user-avatar-hat-bg")) {
         document.querySelector(".sidebar__user-avatar-hat-bg").src = "https://hc-cdn.hel1.your-objectstorage.com/s/v3/d6258e630f490ea0_mask.png";
+      }
+    } else if (themeId === "bg-color-leafy") {
+      body.style.setProperty("--theme-bg-image", `url('https://i.ibb.co/qFNQLtjq/Mask-group-21.png')`);
+      if (document.querySelector(".sidebar__user-avatar-hat-bg")) {
+        document.querySelector(".sidebar__user-avatar-hat-bg").src = "https://i.ibb.co/S7wr4DvT/Mask-group-20.png";
       }
     }
   }
