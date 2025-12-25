@@ -10,7 +10,12 @@
     "128": "images/icon-128.png"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "*://flavortown.hackclub.com/*"
   ],
   "action": {
     "default_popup": "popup/popup.html"
@@ -36,5 +41,12 @@
         "required": ["none"]
       }
     }
+  },
+  "declarative_net_request": {
+    "rule_resources": [{
+      "id": "ruleset_1",
+      "enabled": true,
+      "path": "rules.json"
+    }]
   }
 }
