@@ -73,6 +73,24 @@ function addDevlogImprovement() {
     <button data-md="image" title="Image">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
     </button>
+    <button data-md="blockquote" title="Blockquote">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-quote-icon lucide-text-quote"><path d="M17 5H3"/><path d="M21 12H8"/><path d="M21 19H8"/><path d="M3 12v7"/></svg>
+    </button>
+    <button data-md="list" title="List">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-icon lucide-list"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg>
+    </button>
+    <button data-md="numbered-list" title="Numbered List">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered-icon lucide-list-ordered"><path d="M11 5h10"/><path d="M11 12h10"/><path d="M11 19h10"/><path d="M4 4h1v5"/><path d="M4 9h2"/><path d="M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"/></svg>
+    </button>
+    <button data-md="horizontal-line" title="Horizontal Line">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus"><path d="M5 12h14"/></svg>
+    </button>
+    <button data-md="inline-code" title="Inline Code">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-left-right-ellipsis-icon lucide-chevrons-left-right-ellipsis"><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="m17 7 5 5-5 5"/><path d="m7 7-5 5 5 5"/><path d="M8 12h.01"/></svg>
+    </button>
+    <button data-md="code-block" title="Code Block">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-icon lucide-code"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+    </button>
   `;
 
   devlogTextContainer.after(devlogMdActions);
@@ -121,6 +139,36 @@ function addDevlogImprovement() {
         insertText = selectedText ? `![${selectedText}](imageurl)` : '![Alt text](https://i.ibb.co/yBhBsGyf/Group-11-1.png)';
         newSelectStart = selectStart + (selectedText ? selectedText.length + 4 : 8);
         newSelectEnd = selectStart + 3;
+        break;
+      case "blockquote":
+        insertText = selectedText ? `> ${selectedText}` : '> MD Editor by Spicetown';
+        newSelectStart = selectStart + (selectedText ? 2 : 2);
+        newSelectEnd = selectStart + insertText.length;
+        break;
+      case "list":
+        insertText = selectedText ? `- ${selectedText}` : '- MD Editor by Spicetown';
+        newSelectStart = selectStart + (selectedText ? 2 : 2);
+        newSelectEnd = selectStart + insertText.length;
+        break;
+      case "numbered-list":
+        insertText = selectedText ? `1. ${selectedText}` : '1. MD Editor by Spicetown';
+        newSelectStart = selectStart + (selectedText ? 2 : 2);
+        newSelectEnd = selectStart + insertText.length;
+        break;
+      case "horizontal-line":
+        insertText = "\n---\n";
+        newSelectStart = newSelectEnd = selectStart + insertText.length;
+        break;
+      case "inline-code":
+        insertText = selectedText ? `\`${selectedText}\`` : '`MD Editor by Spicetown`';
+        newSelectStart = selectStart + (selectedText ? 1 : 1);
+        newSelectEnd = selectStart + insertText.length - 1;
+        break;
+
+      case "code-block":
+        insertText = selectedText ? `\`\`\`\n${selectedText}\n\`\`\`` : '```\nMD Editor by Spicetown\n```';
+        newSelectStart = selectStart + (selectedText ? 1 : 1);
+        newSelectEnd = selectStart + insertText.length - 1;
         break;
     }
 
