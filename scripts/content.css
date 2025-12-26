@@ -516,6 +516,13 @@
 .explore__end {
   font-size: 2rem;
 }
+.sidebar__user-name {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
 
 /* .user-profile__achievements {
   overflow-x: scroll;
