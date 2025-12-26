@@ -30,7 +30,8 @@ async function initialize() {
     addImprovedShop,
     addProjectSearcher,
     addThemesPage,
-    addBannerTemplateHint
+    addBannerTemplateHint,
+    addKeybinds
   ];
   uiEnhancements.forEach(func => func());
 
@@ -47,7 +48,21 @@ async function initialize() {
 }
 
 function addKeybinds() { // :3
-  
+  const sidebarItems = document.querySelectorAll(".sidebar__nav-list > .sidebar__nav-item > .sidebar__nav-link");
+  sidebarItems.forEach((sItem, i) => {
+    const nKey = i + 1;
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) { // "omg the metaverse" - some company idk
+        if ((e.key >= "1" && e.key <= "9") || (e.key >= "1" && e.key <= "9" && e.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD)) { // in cased u r a weirdo and use numpad
+          const pressed = parseInt(e.key, 10);
+          if (pressed === nKey) {
+            e.preventDefault();
+            sItem.click();
+          }
+        }
+      }
+    })
+  })
 }
 
 // optimize via DRY principle :yay:
