@@ -1,237 +1,212 @@
+/** VARIABLES **/
 let apiKey = "";
 const savedBgColor = localStorage.getItem("bg-color-theme");
 
 function refreshApiKey() {
-  const apiKeyDisplay = document.querySelector(".api-key-display");
-  if (apiKeyDisplay) {
-    apiKey = apiKeyDisplay.textContent.trim();
-  }
+  const apiKeyEl = document.querySelector(".api-key-display");
+  apiKey = apiKeyEl?.textContent?.trim() ?? "";
 }
 
 async function initialize() {
   const topCollabDiv = document.querySelector(".top-collab img");
   if (topCollabDiv) {
-    const spicetownIcon = document.createElement("img");
-    spicetownIcon.src = chrome.runtime.getURL("/images/hc-gh&st-collab.png");
-    spicetownIcon.style.height = "45px";
-    spicetownIcon.style.width = "auto";
-
-    topCollabDiv.insertAdjacentElement("afterend", spicetownIcon);
+    const spicetownIcon = Object.assign(document.createElement("img"), {
+      src: chrome.runtime.getURL("/images/hc-gh&st-collab.png"),
+      className: "spicetown-icon-header",
+    })
+    spicetownIcon.after(spicetownIcon);
   }
 
-  // settings related
-  addSpicetownSettings(); // must go BEFORE applySettingsSync()
+  // Settings-related functions
+  addSpicetownSettings();
   applySettingsSync();
   applyUISync();
 
-  // non settings related
-  addImprovedUI();
-  addExtraProjectInfo();
-  addImprovedShop();
-  addProjectSearcher();
-  addAchievementInfo();
-  addThemesPage();
-  addBannerTemplateHint();
+  // UI Enhancements
+  const uiEnhancements = [
+    addImprovedUI,
+    addExtraProjectInfo,
+    addImprovedShop,
+    addProjectSearcher,
+    addAchievementInfo,
+    addThemesPage,
+    addBannerTemplateHint
+  ];
+  uiEnhancements.forEach(func => func());
 
+  // Display Incompatiability
   incompatiability();
 
+  // Apply Theme
   if (savedBgColor) {
     applyTheme(savedBgColor);
   }
 
+  // Grab The Api Key
   refreshApiKey();
 }
 
+// optimize via DRY principle :yay:
 function addImprovedUI() {
-  const previousVotesBtn = document.querySelector(".btn.btn--brown.btn--borderless.votes-new__prev-btn");
-  if (previousVotesBtn) {
-    previousVotesBtn.textContent = "Previous votes";
-    const refreshVotesBtn = previousVotesBtn.cloneNode();
-    refreshVotesBtn.textContent = "Skip";
-    refreshVotesBtn.href = "javascript:window.location.href=window.location.href";
-    const voteActionsDiv = document.createElement("div");
-    voteActionsDiv.classList.add("vote-action__div");
-    previousVotesBtn.parentElement.insertBefore(voteActionsDiv, previousVotesBtn.parentElement.querySelector(".votes-new__main"));
-    voteActionsDiv.appendChild(previousVotesBtn);
-    voteActionsDiv.appendChild(refreshVotesBtn);
+  const prevVotesBtn = document.querySelector(".btn.btn--brown.btn--borderless.votes-new__prev-btn");
+  if (prevVotesBtn) {
+    prevVotesBtn.textContent = "Previous votes";
+
+    const skipBtn = prevVotesBtn.cloneNode(true);
+    skipBtn.textContent = "Skip";
+    skipBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      location.reload();
+    });
+    
+    const wrapper = document.createElement("div");
+    wrapper.className = "vote-action__div";
+
+    const mainSection = prevVotesBtn.parentElement.querySelector(".votes-new__main");
+    prevVotesBtn.parentElement.insertBefore(wrapper, mainSection);
+    wrapper.append(prevVotesBtn, skipBtn);
   }
 
-  const sidebarAside = document.querySelector("aside.sidebar")
-  if (sidebarAside) {
-    chrome.storage.local.get(["sidebarPinned"], (result) => {
-      const pinSidebarBtn = document.createElement("button");
-      pinSidebarBtn.classList.add("pin-sidebar__btn");
-      pinSidebarBtn.innerHTML = `
+  const sidebar = document.querySelector("aside.sidebar");
+  if (sidebar) {
+    chrome.storage.local.get(["sidebarPinned"], ({sidebarPinned = false}) => {
+      const pinBtn = document.createElement("button");
+      pinBtn.classList.add("pin-sidebar__btn");
+      pinBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-icon lucide-pin">
           <path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>
         </svg>
       `;
 
-      let pinned = result.sidebarPinned || false;
-      if (pinned) {
-        sidebarAside.classList.add("pinned");
-        sidebarAside.style.width = "var(--sidebar-expanded-width)";
-        pinSidebarBtn.querySelector("svg").style.opacity = 1;
-      } else pinSidebarBtn.querySelector("svg").style.opacity = 0.4;
+      const icon = pinBtn.querySelector("svg");
+      let isPinned = sidebarPinned;
 
-      pinSidebarBtn.addEventListener("click", () => {
-        pinned = !pinned;
-        if (pinned) {
-          sidebarAside.classList.add("pinned");
-          sidebarAside.style.width = "var(--sidebar-expanded-width)";
-          pinSidebarBtn.querySelector("svg").style.opacity = 1;
-        } else {
-          sidebarAside.classList.remove("pinned");
-          sidebarAside.style.width = "";
-          pinSidebarBtn.querySelector("svg").style.opacity = 0.4;
-        }
+      const updateSidebarUI = (pinned) => {
+        sidebar.classList.toggle("pinned", pinned);
+        sidebar.style.width = pinned ? "var(--sidebar-expanded-width)" : "";
+        icon.style.opacity = pinned ? "1" : "0.4";
+      };
 
-        chrome.storage.local.set({sidebarPinned: pinned});
+      updateSidebarUI(isPinned);
+      
+      pinBtn.addEventListener("click", () => {
+        isPinned = !isPinned;
+        updateSidebarUI(isPinned);
+        chrome.storage.local.set({sidebarPinned: isPinned});
       });
 
-      sidebarAside.appendChild(pinSidebarBtn);
-    })
+      sidebar.appendChild(pinBtn);
+    });
   }
 }
 
 function addExtraProjectInfo() {
-  const projectFullPageCard = document.querySelector(".project-show-card");
-  if (!projectFullPageCard) return;
-  const projectFullPageInfoCard = projectFullPageCard.querySelector(".project-show-card__content.project-card__content");
-  const devlogs = projectFullPageInfoCard.querySelector(".project-show-card__stats").firstElementChild.querySelector("span").textContent.match(/\d+/g).join('');
-  const timeRaw = projectFullPageInfoCard.querySelector(".project-show-card__stats .project-show-card__stat:nth-child(2)").querySelector("span").textContent.match(/\d+/g).join(' ');
-  const timeParts = timeRaw.split(" ");
-  const timeMins = Number(timeParts[0]) * 60 + Number(timeParts[1]);
-  const hoursPerDevlog = timeMins / devlogs;
-  // const devlogsPerHr = 
-  const projectExtraInfoDiv = document.createElement("div");
-  projectExtraInfoDiv.classList.add("project-extra-info__div");
-  projectFullPageInfoCard.insertBefore(projectExtraInfoDiv, projectFullPageCard.querySelector(".project-show-card__description"));
-  if (devlogs == "0") {
-    const projectExtraInfoInfoDiv = document.createElement("p");
-    projectExtraInfoInfoDiv.textContent = "Create a devlog to view more stats.";
-    projectExtraInfoDiv.appendChild(projectExtraInfoInfoDiv);
-    return;
-  }
-  const projectDevlogsPerHrDiv = document.createElement("div");
-  projectDevlogsPerHrDiv.classList.add("project-extra-info__container");
-  projectDevlogsPerHrDiv.innerHTML = `
-    <svg width="32" height="32" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color: var(--color-tan-400)">
+  const ICONS = {
+    clock: `
       <g clip-path="url(#clip0_21_12)">
         <path d="M190.5 381C295.683 381 381 295.683 381 190.5C381 85.3166 295.683 0 190.5 0C85.3166 0 0 85.3166 0 190.5C0 295.683 85.3166 381 190.5 381ZM176.892 81.643C176.892 74.1588 183.016 68.0355 190.5 68.0355C197.984 68.0355 204.108 74.1588 204.108 81.643V183.969L267.041 234.315C272.892 239.01 273.844 247.582 269.149 253.433C267.879 255.028 266.265 256.316 264.427 257.199C262.589 258.083 260.575 258.54 258.536 258.536C255.542 258.536 252.548 257.583 250.031 255.542L181.996 201.114C178.798 198.528 176.894 194.651 176.894 190.5L176.892 81.643Z" fill="currentColor"/>
         <path d="M504.005 368.521L462.996 326.967C458.004 322.017 451.004 319.054 443.009 319.054H383.992C368.997 318.06 356 330.924 356 345.766V484.294C355.994 487.935 356.714 491.542 358.119 494.907C359.524 498.271 361.586 501.329 364.188 503.903C366.79 506.477 369.879 508.517 373.279 509.907C376.679 511.296 380.323 512.008 384.002 512H483.998C487.677 512.008 491.321 511.296 494.721 509.907C498.121 508.517 501.21 506.477 503.812 503.903C506.414 501.329 508.476 498.271 509.881 494.907C511.286 491.542 512.006 487.935 512 484.294V387.329C512 380.4 508.997 373.471 504.005 368.521ZM403.999 397.221H434C437.997 397.221 441.995 400.193 441.995 405.134C441.995 410.084 439.002 413.047 434 413.047H403.999C402.946 413.06 401.9 412.864 400.924 412.471C399.948 412.078 399.062 411.495 398.317 410.758C397.572 410.021 396.983 409.143 396.586 408.177C396.189 407.211 395.991 406.176 396.004 405.134C396.004 400.183 400.002 397.221 403.999 397.221ZM464.001 452.632H403.999C400.002 452.632 396.004 449.66 396.004 444.719C396.004 439.778 398.998 436.806 403.999 436.806H464.001C467.998 436.806 471.996 439.768 471.996 444.719C471.996 449.669 467.998 452.632 464.001 452.632Z" fill="currentColor"/>
       </g>
       <defs>
-        <clipPath id="clip0_21_12">
-          <rect width="512" height="512" fill="white"/>
-        </clipPath>
-      </defs>
-    </svg>
-    <p>A devlog for every ${Math.round(hoursPerDevlog)} minutes <span class="project-extra-info__rating" id="devlogs-per-hr-span">(?)</span></p>
-  `
-  projectExtraInfoDiv.appendChild(projectDevlogsPerHrDiv);
-  const devlogsPerHrSpan = document.getElementById("devlogs-per-hr-span");
-  if (!devlogsPerHrSpan) return;
-  if (hoursPerDevlog >= 150) {
-    devlogsPerHrSpan.textContent = "(Awful)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--awful");
-  } else if (hoursPerDevlog >= 120) {
-    devlogsPerHrSpan.textContent = "(Bad)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--bad");
-  } else if (hoursPerDevlog >= 101) {
-    devlogsPerHrSpan.textContent = "(Okay)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--okay");
-  } else if (hoursPerDevlog >= 81) {
-    devlogsPerHrSpan.textContent = "(Good)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--good");
-  } else if (hoursPerDevlog >= 40) {
-    devlogsPerHrSpan.textContent = "(Great)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--great");
-  } else if (hoursPerDevlog >= 20) {
-    devlogsPerHrSpan.textContent = "(Good)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--good");
-  } else if (hoursPerDevlog >= 15) {
-    devlogsPerHrSpan.textContent = "(Okay)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--okay");
-  } else if (hoursPerDevlog >= 10) {
-    devlogsPerHrSpan.textContent = "(Bad)"
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--bad");
-  } else {
-    devlogsPerHrSpan.textContent = "(Awful)";
-    devlogsPerHrSpan.classList.add("project-extra-info__rating--awful");
+        <clipPath id="clip0_21_12"><rect width="512" height="512" fill="white"/></clipPath>
+      </defs>`,
+    calendar: `
+      <path d="M190.5 381C295.683 381 381 295.683 381 190.5C381 85.3166 295.683 0 190.5 0C85.3166 0 0 85.3166 0 190.5C0 295.683 85.3166 381 190.5 381ZM176.892 81.643C176.892 74.1588 183.016 68.0355 190.5 68.0355C197.984 68.0355 204.108 74.1588 204.108 81.643V183.969L267.041 234.315C272.892 239.01 273.844 247.582 269.149 253.433C267.879 255.028 266.265 256.316 264.427 257.199C262.589 258.083 260.575 258.54 258.536 258.536C255.542 258.536 252.548 257.583 250.031 255.542L181.996 201.114C178.798 198.528 176.894 194.651 176.894 190.5L176.892 81.643Z" fill="currentColor"/>
+      <path d="M336.014 402.2C336.004 403.063 336 403.936 336 404.821V449.979C336 459.357 336.492 467.466 338.005 474.275C339.539 481.18 342.234 487.251 346.991 492.009C351.749 496.766 357.82 499.461 364.725 500.995C371.534 502.509 379.643 503 389.021 503H450.979C460.357 503 468.466 502.509 475.275 500.995C482.18 499.461 488.251 496.766 493.009 492.009C497.766 487.251 500.461 481.18 501.995 474.275C503.509 467.466 504 459.357 504 449.979V404.821C504 403.936 503.996 403.063 503.987 402.2H336.014Z" fill="currentColor"/>
+      <path d="M361.199 354.715V343.4C361.199 338.761 364.96 335 369.599 335C374.238 335 377.999 338.761 377.999 343.4V352.092C381.453 351.885 385.127 351.8 389.02 351.8H450.978C454.872 351.8 458.546 351.885 461.999 352.092V343.4C461.999 338.761 465.76 335 470.399 335C475.038 335 478.799 338.761 478.799 343.4V354.715C484.252 356.339 489.077 358.861 493.008 362.791C497.766 367.549 500.46 373.62 501.994 380.525C502.34 382.082 502.633 383.707 502.879 385.4H337.12C337.365 383.707 337.658 382.082 338.004 380.525C339.538 373.62 342.233 367.549 346.99 362.791C350.921 358.861 355.747 356.339 361.199 354.715Z" fill="currentColor"/>`,
+    users: `
+      <path d="M155.5 0C104.054 0 62.2 41.8723 62.2 93.3398C62.2 144.807 104.054 186.68 155.5 186.68C206.946 186.68 248.8 144.807 248.8 93.3398C248.8 41.8723 206.946 0 155.5 0ZM271.583 247.658C246.04 221.711 212.177 207.422 176.233 207.422H134.767C98.8234 207.422 64.9603 221.711 39.4168 247.658C13.9985 273.478 0 307.56 0 343.629C0 349.357 4.6415 354 10.3667 354H300.633C306.358 354 311 349.357 311 343.629C311 307.56 297.002 273.478 271.583 247.658Z" fill="currentColor"/>
+      <path d="M336.014 402.2C336.004 403.063 336 403.936 336 404.821V449.979C336 459.357 336.492 467.466 338.005 474.275C339.539 481.18 342.234 487.251 346.991 492.009C351.749 496.766 357.82 499.461 364.725 500.995C371.534 502.509 379.643 503 389.021 503H450.979C460.357 503 468.466 502.509 475.275 500.995C482.18 499.461 488.251 496.766 493.009 492.009C497.766 487.251 500.461 481.18 501.995 474.275C503.509 467.466 504 459.357 504 449.979V404.821C504 403.936 503.996 403.063 503.987 402.2H336.014Z" fill="currentColor"/>
+      <path d="M361.199 354.715V343.4C361.199 338.761 364.96 335 369.599 335C374.238 335 377.999 338.761 377.999 343.4V352.092C381.453 351.885 385.127 351.8 389.02 351.8H450.978C454.872 351.8 458.546 351.885 461.999 352.092V343.4C461.999 338.761 465.76 335 470.399 335C475.038 335 478.799 338.761 478.799 343.4V354.715C484.252 356.339 489.077 358.861 493.008 362.791C497.766 367.549 500.46 373.62 501.994 380.525C502.34 382.082 502.633 383.707 502.879 385.4H337.12C337.365 383.707 337.658 382.082 338.004 380.525C339.538 373.62 342.233 367.549 346.99 362.791C350.921 358.861 355.747 356.339 361.199 354.715Z" fill="currentColor"/>`
+  };
+
+  // helpers to optimize this garbage code
+  const getRating = (value, scale) => {
+    const rating = scale.find(s => s.min === undefined ? value <= s.max : value >= s.min) || {label: "(?)", class: ""};
+    return rating;
   }
 
-  const projectTimeline = document.querySelector(".projects-show__timeline");
-  if (projectTimeline) {
-    const innerProjectTimeline = projectTimeline.querySelector(".mt-4");
-    const earliestDevlogEl = innerProjectTimeline.lastElementChild;
-    const earliestDevlogTimeEl = earliestDevlogEl.querySelector(".post__time");
-    const earliestDevlogTime = (earliestDevlogTimeEl.textContent.includes("day")) ? earliestDevlogTimeEl.textContent.match(/\d+/g).join('') : "1";
-    const projectTimePerDay = timeMins / earliestDevlogTime
-    const projectTimePerDayFormatted = convertMToFormat(projectTimePerDay);
-    const projectTimePerDayDiv = document.createElement("div");
-    projectTimePerDayDiv.classList.add("project-extra-info__container");
-    projectTimePerDayDiv.innerHTML = `
-      <svg width="32" height="32" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: var(--color-tan-400)">
-        <path d="M190.5 381C295.683 381 381 295.683 381 190.5C381 85.3166 295.683 0 190.5 0C85.3166 0 0 85.3166 0 190.5C0 295.683 85.3166 381 190.5 381ZM176.892 81.643C176.892 74.1588 183.016 68.0355 190.5 68.0355C197.984 68.0355 204.108 74.1588 204.108 81.643V183.969L267.041 234.315C272.892 239.01 273.844 247.582 269.149 253.433C267.879 255.028 266.265 256.316 264.427 257.199C262.589 258.083 260.575 258.54 258.536 258.536C255.542 258.536 252.548 257.583 250.031 255.542L181.996 201.114C178.798 198.528 176.894 194.651 176.894 190.5L176.892 81.643Z" fill="currentColor"/>
-        <path d="M336.014 402.2C336.004 403.063 336 403.936 336 404.821V449.979C336 459.357 336.492 467.466 338.005 474.275C339.539 481.18 342.234 487.251 346.991 492.009C351.749 496.766 357.82 499.461 364.725 500.995C371.534 502.509 379.643 503 389.021 503H450.979C460.357 503 468.466 502.509 475.275 500.995C482.18 499.461 488.251 496.766 493.009 492.009C497.766 487.251 500.461 481.18 501.995 474.275C503.509 467.466 504 459.357 504 449.979V404.821C504 403.936 503.996 403.063 503.987 402.2H336.014Z" fill="currentColor"/>
-        <path d="M361.199 354.715V343.4C361.199 338.761 364.96 335 369.599 335C374.238 335 377.999 338.761 377.999 343.4V352.092C381.453 351.885 385.127 351.8 389.02 351.8H450.978C454.872 351.8 458.546 351.885 461.999 352.092V343.4C461.999 338.761 465.76 335 470.399 335C475.038 335 478.799 338.761 478.799 343.4V354.715C484.252 356.339 489.077 358.861 493.008 362.791C497.766 367.549 500.46 373.62 501.994 380.525C502.34 382.082 502.633 383.707 502.879 385.4H337.12C337.365 383.707 337.658 382.082 338.004 380.525C339.538 373.62 342.233 367.549 346.99 362.791C350.921 358.861 355.747 356.339 361.199 354.715Z" fill="currentColor"/>
-      </svg>
-      <p>${projectTimePerDayFormatted} a day <span class="project-extra-info__rating" id="project-time-per-day-span">(?)</span></p>
-    `
-    projectExtraInfoDiv.appendChild(projectTimePerDayDiv);
-    const timePerDaySpan = document.getElementById("project-time-per-day-span");
-    if (!timePerDaySpan) return;
-    if (projectTimePerDay < 30) {
-      timePerDaySpan.textContent = "(Awful)";
-      timePerDaySpan.classList.add("project-extra-info__rating--awful");
-    } else if (projectTimePerDay < 60) {
-      timePerDaySpan.textContent = "(Bad)";
-      timePerDaySpan.classList.add("project-extra-info__rating--bad");
-    } else if (projectTimePerDay < 120) {
-      timePerDaySpan.textContent = "(Okay)";
-      timePerDaySpan.classList.add("project-extra-info__rating--okay");
-    } else if (projectTimePerDay < 180) {
-      timePerDaySpan.textContent = "(Good)";
-      timePerDaySpan.classList.add("project-extra-info__rating--good");
-    } else if (projectTimePerDay >= 180) {
-      timePerDaySpan.textContent = "(Great)";
-      timePerDaySpan.classList.add("project-extra-info__rating--great");
-    } else {
-      timePerDaySpan.textContent = "(?)"
-    }
+  const parseNum = (el) => parseInt(el?.textContent.replace(/\D/g, "") || "0", 10);
 
-    const followers = projectFullPageInfoCard.querySelector(".project-show-card__stat.project-show-card__stat--clickable > span").textContent.match(/\d+/g).join('');
-    const followersPerDay = followers / earliestDevlogTime;
-    const followersPerDayDiv = document.createElement("div");
-    followersPerDayDiv.classList.add("project-extra-info__container");
-    followersPerDayDiv.innerHTML = `
-      <svg width="32" height="32" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: var(--color-tan-400)">
-        <path d="M155.5 0C104.054 0 62.2 41.8723 62.2 93.3398C62.2 144.807 104.054 186.68 155.5 186.68C206.946 186.68 248.8 144.807 248.8 93.3398C248.8 41.8723 206.946 0 155.5 0ZM271.583 247.658C246.04 221.711 212.177 207.422 176.233 207.422H134.767C98.8234 207.422 64.9603 221.711 39.4168 247.658C13.9985 273.478 0 307.56 0 343.629C0 349.357 4.6415 354 10.3667 354H300.633C306.358 354 311 349.357 311 343.629C311 307.56 297.002 273.478 271.583 247.658Z" fill="currentColor"/>
-        <path d="M336.014 402.2C336.004 403.063 336 403.936 336 404.821V449.979C336 459.357 336.492 467.466 338.005 474.275C339.539 481.18 342.234 487.251 346.991 492.009C351.749 496.766 357.82 499.461 364.725 500.995C371.534 502.509 379.643 503 389.021 503H450.979C460.357 503 468.466 502.509 475.275 500.995C482.18 499.461 488.251 496.766 493.009 492.009C497.766 487.251 500.461 481.18 501.995 474.275C503.509 467.466 504 459.357 504 449.979V404.821C504 403.936 503.996 403.063 503.987 402.2H336.014Z" fill="currentColor"/>
-        <path d="M361.199 354.715V343.4C361.199 338.761 364.96 335 369.599 335C374.238 335 377.999 338.761 377.999 343.4V352.092C381.453 351.885 385.127 351.8 389.02 351.8H450.978C454.872 351.8 458.546 351.885 461.999 352.092V343.4C461.999 338.761 465.76 335 470.399 335C475.038 335 478.799 338.761 478.799 343.4V354.715C484.252 356.339 489.077 358.861 493.008 362.791C497.766 367.549 500.46 373.62 501.994 380.525C502.34 382.082 502.633 383.707 502.879 385.4H337.12C337.365 383.707 337.658 382.082 338.004 380.525C339.538 373.62 342.233 367.549 346.99 362.791C350.921 358.861 355.747 356.339 361.199 354.715Z" fill="currentColor"/>
-      </svg>
-      <p>${Math.round((followersPerDay + Number.EPSILON) * 100) / 100} follower(s) a day <span class="project-extra-info__rating" id="followers-per-day-span">(?)</span></p>
-    `
-    projectExtraInfoDiv.appendChild(followersPerDayDiv);
-    const followersPerDaySpan = document.getElementById("followers-per-day-span");
-    if (!followersPerDaySpan) return;
-    if (followersPerDay < .1) {
-      followersPerDaySpan.textContent = "(Awful)";
-      followersPerDaySpan.classList.add("project-extra-info__rating--awful");
-    } else if (followersPerDay < .2) {
-      followersPerDaySpan.textContent = "(Bad)";
-      followersPerDaySpan.classList.add("project-extra-info__rating--bad");
-    } else if (followersPerDay < .3) {
-      followersPerDaySpan.textContent = "(Okay)";
-      followersPerDaySpan.classList.add("project-extra-info__rating--okay");
-    } else if (followersPerDay < .5) {
-      followersPerDaySpan.textContent = "(Good)";
-      followersPerDaySpan.classList.add("project-extra-info__rating--good");
-    } else if (followersPerDay >= .5) {
-      followersPerDaySpan.textContent = "(Great)";
-      followersPerDaySpan.classList.add("project-extra-info__rating--great");
-    }
+  const card = document.querySelector(".project-show-card");
+  const content = document.querySelector(".project-show-card__content.project-card__content");
+  if (!content) return;
+
+  const stats = content.querySelectorAll(".project-show-card__stat");
+  const devlogCount = parseNum(stats[0]);
+
+  const timeRaw = stats[1]?.textContent.match(/\d+/g) || ["0", "0"];
+  const totalMins = (parseInt(timeRaw[0]) * 60) + parseInt(timeRaw[1] || 0);
+
+  const extraInfoDiv = document.createElement("div");
+  extraInfoDiv.className = "project-extra-info__div";
+  content.insertBefore(extraInfoDiv, card.querySelector(".project-show-card__description"));
+
+  if (devlogCount === 0) {
+    extraInfoDiv.innerHTML = "<p>Create a devlog to view more stats.</p>";
+    return;
+  }
+
+  const scales = {
+    minsPerDevlog: [
+      {min: 150, label: "(Awful)", class: "awful"},
+      {min: 120, label: "(Bad)", class: "bad"},
+      {min: 101, label: "(Okay)", class: "okay"},
+      {min: 81, label: "(Good)", class: "good"},
+      {min: 40, label: "(Great)", class: "great"},
+      {min: 20, label: "(Good)", class: "good"},
+      {min: 15, label: "(Okay)", class: "okay"},
+      {min: 10, label: "(Bad)", class: "bad"},
+      {min: 0, label: "(Awful)", class: "awful"}
+    ],
+    timePerDay: [
+      {min: 180, label: "(Great)", class: "great"},
+      {min: 120, label: "(Good)", class: "good"},
+      {min: 60, label: "(Okay)", class: "okay"},
+      {min: 30, label: "(Bad)", class: "bad"},
+      {min: 0, label: "(Awful)", class: "awful"}
+    ],
+    followersPerDay: [
+      {min: 0.5, label: "(Great)", class: "great"},
+      {min: 0.3, label: "(Good)", class: "good"},
+      {min: 0.2, label: "(Okay)", class: "okay"},
+      {min: 0.1, label: "(Bad)", class: "bad"},
+      {min: 0, label: "(Awful)", class: "awful"}
+    ]
+  };
+
+  const createStatRow = (svgType, text, ratingObj) => {
+    const row = document.createElement("div");
+    row.className = "project-extra-info__container";
+    row.innerHTML = `
+      ${getSvg(svgType)}
+      <p>${text} <span class="project-extra-info__rating project-extra-info__rating--${ratingObj.class}">${ratingObj.label}</span></span>
+    `;
+    return row;
+  };
+
+  const minsPerDevlog = totalMins / devlogCount;
+  extraInfoDiv.appendChild(createStatRow('clock', `1 devlog for every ${Math.round(minsPerDevlog)} min(s)`, getRating(minsPerDevlog, scales.minsPerDevlog)));
+
+  const timeline = document.querySelector(".projects-show__timeline .mt-4");
+  if (timeline) {
+    const lastPost = timeline.lastElementChild?.querySelector(".post__time")?.textContent || "";
+    const daysActive = parseInt(lastPost.match(/\d+/) || "1", 10);
+
+    const minsPerDay = totalMins / daysActive;
+    extraInfoDiv.appendChild(createStatRow('calendar', `${convertMToFormat(minsPerDay)} a day`, getRating(minsPerDay, scales.timePerDay)));
+
+    const followerCount = parseNum(content.querySelector(".project-show-card__stat--clickable"));
+    const followersPerDay = (followerCount / daysActive).toFixed(2);
+    extraInfoDiv.appendChild(createStatRow('users', `${followersPerDay} follower(s) a day`, getRating(followersPerDay, scales.followersPerDay)));
+  }
+
+  function getSvg(type) {
+    const fillMode = type === 'clock' ? 'currentColor' : 'none';
+    return `
+      <svg width="32" height="32" viewBox="0 0 512 512" fill="${fillMode}" xmlns="http://www.w3.org/2000/svg" style="color: var(--color-tan-400)">
+        ${ICONS[type]}
+      </svg>`;
   }
 }
 
@@ -553,6 +528,13 @@ function addImprovedShop() {
 }
 
 async function addProjectSearcher() {
+  const getRandomIntegerInclusive = (min, max) => { // WHY IS THIS NOT A NORMAL FUCKING JAVASCRIPT FUNCTION ARGHHHH
+    min = Math.ceil(min)
+    max = Math.floor(max)
+
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+
   const explorePageContainer = document.querySelector(".explore");
   const projectList = document.querySelector("#project-list");
 
@@ -566,10 +548,15 @@ async function addProjectSearcher() {
   searchInput.classList.add("project-list__searcher", "input__field");
 
   const searchBtn = document.createElement("button");
-  searchBtn.classList.add("project-list__search-btn");
+  searchBtn.classList.add("project-list__action-btn");
   searchBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 40 40" fill="none"><path d="M39.0527 34.2126L29.8565 25.0156C31.419 22.5281 32.3258 19.5879 32.3258 16.4326C32.3258 7.50574 25.0891 0.27002 16.1626 0.27002C7.23605 0.27002 0 7.50574 0 16.4326C0 25.3598 7.23571 32.5948 16.1626 32.5948C19.5964 32.5948 22.777 31.5213 25.3942 29.6971L34.481 38.7846C35.1124 39.4154 35.9402 39.7295 36.7669 39.7295C37.5946 39.7295 38.4213 39.4154 39.0537 38.7846C40.3155 37.5215 40.3155 35.4754 39.0527 34.2126ZM16.1626 27.3584C10.1291 27.3584 5.23745 22.4671 5.23745 16.4333C5.23745 10.3994 10.1291 5.50781 16.1626 5.50781C22.1964 5.50781 27.0877 10.3994 27.0877 16.4333C27.0877 22.4671 22.1964 27.3584 16.1626 27.3584Z" fill="currentColor"></path></svg>`;
 
+  const randomBtn = document.createElement("button");
+  randomBtn.classList.add("project-list__action-btn");
+  randomBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dice1-icon lucide-dice-1"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M12 12h.01"/></svg>`
+
   searchContainer.appendChild(searchInput);
+  searchContainer.appendChild(randomBtn);
   searchContainer.appendChild(searchBtn);
 
   const insertionPoint = explorePageContainer.querySelector(".explore__projects-list") || projectList;
@@ -585,13 +572,11 @@ async function addProjectSearcher() {
 
     try {
       refreshApiKey();
-      const API_KEY = apiKey;
-
       const query = encodeURIComponent(searchInput.value);
       const response = await fetch(`https://flavortown.hackclub.com/api/v1/projects?query=${query}&page=${currentPage}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${API_KEY}`,
+          'Authorization': `Bearer ${apiKey}`,
           'Accept': 'application/json'
         }
       });
@@ -611,6 +596,65 @@ async function addProjectSearcher() {
       console.error("i failed to fetch shit FAAHHHHH: ", err);
     }
   };
+
+  const getTotalProjects = async () => {
+    try {
+      refreshApiKey();
+      const response = await fetch('https://flavortown.hackclub.com/api/v1/projects', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.error === "rate_limited" || data.error === "unauthorized") {
+        if (data.error === "rate_limited") projectList.innerHTML = `<p class="explore__end">Rate limited. Wait 1 min.</p>`
+        else if (data.error === "unauthorized") projectList.innerHTML = `<p class="explore__end">Generate an API key from settings.</p>`
+        return;
+      }
+
+      return data.pagination.total_count;
+    } catch (err) {
+      console.error("i couldnt get projects api grrrrrrrrrr", + err);
+    }
+  }
+
+  const getRandomProject = async (lastProjectID) => {
+    try {
+      refreshApiKey();
+      const randomProjectID = getRandomIntegerInclusive(1, lastProjectID);
+      const response = await fetch(`https://flavortown.hackclub.com/api/v1/projects/${randomProjectID}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.status === 404 && lastProjectID != undefined) {
+        getRandomProject(lastProjectID);
+        return "deleted_project";
+      } else if (lastProjectID === undefined) {
+        return "rate_limited";
+      }
+
+      const data = await response.json();
+
+      if (data.error === "rate_limited" || data.error === "unauthorized") {
+        if (data.error === "rate_limited") projectList.innerHTML = `<p class="explore__end">Rate limited. Wait 1 min.</p>`
+        else if (data.error === "unauthorized") projectList.innerHTML = `<p class="explore__end">Generate an API key from settings.</p>`
+        return;
+      }
+
+      return randomProjectID;
+    } catch (err) {
+      console.error("i couldnt get specific project api UGHHHHHHHHHHHHHHHHHHHHHHHHHHHHH", err);
+      getRandomProject(lastProjectID);
+    }
+  }
 
   function updatePaginationUI(paginationData) {
     let paginationContainer = document.querySelector(".explore__pagination");
@@ -678,6 +722,18 @@ async function addProjectSearcher() {
   searchInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") handleSearch(false);
   });
+
+randomBtn.addEventListener("click", async () => {
+  const randomProjectID = await getRandomProject(await getTotalProjects());
+
+  if (randomProjectID === "deleted_project") {
+    projectList.innerHTML = `<p class="explore__end">Deleted project. Try again.</p>`;
+  } else if (randomProjectID === "rate_limited") {
+    projectList.innerHTML = `<p class="explore__end">Rate limited. Wait 1 min.</p>`;
+  } else {
+    window.location.pathname = `/projects/${randomProjectID}`;
+  }
+});
 }
 
 addProjectSearcher();
