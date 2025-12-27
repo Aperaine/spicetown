@@ -30,6 +30,7 @@ async function initialize() {
     addExtraProjectInfo,
     addImprovedShop,
     addProjectSearcher,
+    addUserExplore,
     addThemesPage,
     addBannerTemplateHint,
     addKeybinds
@@ -851,17 +852,29 @@ async function addProjectSearcher() {
     if (e.key === "Enter") handleSearch(false);
   });
 
-randomBtn.addEventListener("click", async () => {
-  const randomProjectID = await getRandomProject(await getTotalProjects());
+  randomBtn.addEventListener("click", async () => {
+    const randomProjectID = await getRandomProject(await getTotalProjects());
 
-  if (randomProjectID === "deleted_project") {
-    projectList.innerHTML = `<p class="explore__end">Deleted project. Try again.</p>`;
-  } else if (randomProjectID === "rate_limited") {
-    projectList.innerHTML = `<p class="explore__end">Rate limited. Wait 1 min.</p>`;
-  } else {
-    window.location.pathname = `/projects/${randomProjectID}`;
-  }
-});
+    if (randomProjectID === "deleted_project") {
+      projectList.innerHTML = `<p class="explore__end">Deleted project. Try again.</p>`;
+    } else if (randomProjectID === "rate_limited") {
+      projectList.innerHTML = `<p class="explore__end">Rate limited. Wait 1 min.</p>`;
+    } else {
+      window.location.pathname = `/projects/${randomProjectID}`;
+    }
+  });
+}
+
+async function addUserExplore() {
+  const exploreNav = document.querySelector(".explore__nav");
+  if (!exploreNav) return;
+  const usersComponent = document.querySelectorAll(".explore__nav-component:not(.selected)")[0].cloneNode(true);
+  usersComponent.href = "/explore/users";
+  usersComponent.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Users
+  `;
+  exploreNav.insertBefore(usersComponent, exploreNav.querySelector(".explore__nav-component[href='/explore/following']"));
 }
 
 // function addAchievementInfo() { // deprecate
@@ -1049,11 +1062,12 @@ async function addThemesPage() {
     document.head.querySelector("style").remove();
     document.title = "Flavortown";
 
-    const faviconLinkEl = document.createElement("link");
-    faviconLinkEl.setAttribute("rel", "icon");
-    faviconLinkEl.setAttribute("type", "image/x-icon");
-    faviconLinkEl.href = "https://flavortown.hackclub.com/assets/favicon-5ea28202.ico";
-    document.head.appendChild(faviconLinkEl);
+    // will fix :sickbro:
+    // const faviconLinkEl = document.createElement("link");
+    // faviconLinkEl.setAttribute("rel", "icon");
+    // faviconLinkEl.setAttribute("type", "image/x-icon");
+    // faviconLinkEl.href = "https://flavortown.hackclub.com/assets/favicon-5ea28202.ico";
+    // document.head.appendChild(faviconLinkEl);
  
     document.head.innerHTML += `<link rel="stylesheet" href="${await getFlavortownCSS()}" data-turbo-track="reload">`;
 
