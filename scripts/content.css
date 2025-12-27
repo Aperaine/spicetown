@@ -691,13 +691,13 @@
 
 [data-theme="bg-color-charcoal"] {
   --bg-primary: #353535;
-  --text-primary: #e0e3f1;
-  --text-highlight: #d1d6e9;
+  --text-primary: #f0f0f0;
+  --text-highlight: #dfdfdf;
 
   --surface-header: #8f8f8f;
-  --surface-header-backdrop: #aeaeae;
-  --surface-card: #6e738d;
-  --surface-dark: #363a4f;
+  --surface-header-backdrop: #797979;
+  --surface-card: #8c8c8c;
+  --surface-dark: #515151;
 
   --accent: #727272;
   --accent-darker: #242424;
@@ -707,17 +707,18 @@
 
   --kitchen-bar-border: #727272;
   --kitchen-bar-bg: #242424;
-  --kitchen-gradient: linear-gradient(90deg, #8c8c8c 0%, #d7d7d7 100%);
+  --kitchen-gradient: linear-gradient(90deg, #8c8c8c 0%, #323232 100%);
 
   --input-main-bg: #aeaeae;
   --input-sub-bg: #8f8f8f;
-  --input-sub-text: #b8c0e0;
+  --input-sub-text: #d3d3d3;
 
   --create-project-url: url("https://hc-cdn.hel1.your-objectstorage.com/s/v3/dd434c974c09b148_outline.png");
   --projects-show-timeline-url: ursl('data:image/svg+xml,<svg width="8" height="90" viewBox="0 0 4 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="4" height="30" rx="2" fill="%23b88bee"/></svg>');
 
   --accent-image : url("https://hc-cdn.hel1.your-objectstorage.com/s/v3/cb0b4ddb0ba5d286_texture.png");
-  --star-color : #aeaeae;
+  --star-color: #b9d4ff;
+  --music-player-bg: var(--accent)
 }
 
 /** Leafy THEME **/
@@ -944,6 +945,7 @@
   background: var(--accent-darker) !important;
 }
 
+[data-theme] .shop-goals__heading-progress-bar-fill{background: var(--kitchen-gradient) !important;}
 [data-theme] .shop__searchbar > .input {
   --input-bg: var(--input-sub-bg) !important;
   --input-placeholder-color: var(--accent-muted) !important;
@@ -988,14 +990,14 @@
 [data-theme] .shop-item-card .shop-item-card__price,
 [data-theme] .shop-item-card .shop-item-card__hours,
 [data-theme] .shop-goals__container .shop-goals__title {color: var(--text-highlight) !important;}
-[data-theme] .shop-goals__container .shop-goals__title svg {color: var(--accent) !important;}
+[data-theme] .shop-goals__container .shop-goals__title svg {color: var(--star-color, var(--accent)) !important;}
 [data-theme] .shop-goals__container .shop-goals__image {background-color: var(--accent-darker) !important;}
 [data-theme] .shop-item-card .shop-item-card__description {color: var(--text-primary) !important;}
 [data-theme] .shop-item-card .shop-item-card__order-button > .btn.btn-primary.w-full,
 [data-theme] .shop-item-card .shop-item-card__star {background: var(--accent) !important;}
 [data-theme] .shop-item-card .shop-item-card__star:not(.shop-item-card__star--active) > svg {color: var(--accent-muted);}
-[data-theme] .shop-item-card .shop-item-card__star--active > svg {color: var(--text-highlight);}
-[data-theme] .shop-item-card .shop-item-card__star:not(.shop-item-card__star--active) > svg:hover {color: var(--text-highlight);}
+[data-theme] .shop-item-card .shop-item-card__star--active > svg {color: var(--star-color, var(--text-highlight));}
+[data-theme] .shop-item-card .shop-item-card__star:not(.shop-item-card__star--active) > svg:hover {color: var(--star-color, var(--text-highlight));}
 [data-theme] .shop-goals__container {
   background: linear-gradient(135deg, var(--surface-card) 0%, var(--surface-dark) 100%) !important;
   border-color: var(--border-color) !important;
@@ -1115,4 +1117,10 @@
   border-color: var(--border-color);
   background-color: var(--bg-primary);
   color: var(--accent);
+}
+[data-theme] .music-player__play-pause{
+  background: var(--music-player-bg, var(--color-brown-700));
+}
+[data-theme] .music-player__volume{
+  background: var(--music-player-bg, var(--color-brown-700));
 }

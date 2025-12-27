@@ -39,6 +39,12 @@
       </li>
     </ul>
   </li>
+  <li><a href="#installation">Installation</a>
+    <ul>
+      <li><a href="#from-source">From Source</a></li>
+      <li><a href="#from-webstore">From Webstore</a></li>
+    </ul>
+  </li>
   <li><a href="#improvements">Improvements</a>
     <ul>
       <li><a href="#exposed-achievements">Exposed Achievements</a></li>
@@ -198,6 +204,26 @@
 <h3 id="themes-charcoal">Charcoal</h4>
 <p><b>Charcoal</b> is the fourth theme added to <b>Spicetown</b> after Catppuccin <small>Macchiato</small>. Originally the theme would have everything on fire, but looked too much like a halloween theme than anything. Until more projects ship so I can test voting css, this is a work in progress.</p>
 
+<h2 id="installation">Installation</h2>
+<h3 id="from-source">From Source</h3>
+<p>Click on "code", then download the zip. Go to chrome://extensions (or the equivalent of that on your browser), unzip your file, and drag-in the folder.
+
+<h3 id="from-webstore">From addons store</h3>
+<table>
+  <tr>
+    <th align="left">Browser</th>
+    <th align="left">Link</th>
+  </tr>
+  <tr>
+    <td>Chromium (Chrome, Arc, Edge, etc)</td>
+    <td><a href="https://chromewebstore.google.com/detail/spicetown/kbcbgiihiopcbgimdopcfcemikagemgl">Chrome Web Store</a></td>
+  </tr>
+  <tr>
+    <td>Firefox</td>
+    <td><a href="https://addons.mozilla.org/en-US/firefox/addon/spicetown/">Firefox Addons</a></td>
+  </tr>
+</table>
+
 <h2 id="improvements">Improvements</h2>
 <p>Spicetown regularly makes improvements to existing Flavortown features. These improvements mostly either improves the UI or adds hidden, scrapped Flavortown functionalities back into Flavortown.</p>
 
@@ -225,8 +251,6 @@
   </tr>
 </table>
 
-<h3 id="exposed-achievements">Exposed Achievements <small>(Deprecated)</small></h3>
-<p>Exposed Achievements exposes hidden and secret achievements by replacing the "???" title, mysterious description, and "?" cookie reward with the actual ones straight from the source code! Please not that this process is currently <b>not automatic</b>. New achievements will <b>not</b> be exposed immediately without manual input.</p>
 
 <h3 id="voting+">Voting+</h3>
 <p>Voting+ adds the "Skip" button, which refreshes the page and shorterns the "See my previous votes" to "Previous votes".</p>
