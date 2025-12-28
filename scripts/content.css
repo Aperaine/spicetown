@@ -1077,6 +1077,7 @@
 [data-theme] .user-profile__stats h3,
 [data-theme] .user-profile__time h4,
 [data-theme] .user-profile__card h2,
+[data-theme] .user-profile__card p,
 [data-theme] .user-profile__project-stats > .user-profile__project-card-title h3,
 [data-theme] .user-profile__project-stats > div:not(.user-profile__project-card-title),
 [data-theme] .user-profile__achievement .user-profile__achievement-title,
