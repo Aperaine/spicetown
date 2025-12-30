@@ -180,25 +180,30 @@ function addDevlogImprovement() {
 
   const parentContainer = document.querySelector(".projects-new__form > .projects-new__card > .projects-new__field");
   const previewContainer = document.createElement("div");
+  previewContainer.classList.add("post__body");
 
-  const parser = (text) => { // whaddafuck this took so fucking long with documentation n stuff
+  const parser = (text) => {
     let parsedHTML = text
       .replace(/```(?:[a-z]+)?\n([\s\S]*?)\n```/gim, '<pre><code><span>$1</span></code></pre>')
-      .replace(/^_(.*?)_/gim, "<i>$1</i>")
-      .replace(/\*(.*?)\*/gim, "<i>$1</i>")
-      .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>") // im never messing with regex ever again WHAT THE FUCK
+      .replace(/\*\*\*_(.*?)_\*\*\*/gim, "<strong><em>$1</em></strong>")
+      .replace(/\*\*_(.*?)_\*\*/gim, "<strong><em>$1</em></strong>")
+      .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2'/>")
+      .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank'>$1</a>")
       .replace(/^# (.*$)/gim, "<h1>$1</h1>")
       .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-      .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2'/>") // ok at least this one is just copy and pasting from previous one :D
-      .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank'>$1</a>") // WHYYYYYYYYY MY SANITY
+      .replace(/^\s*-\s+(.*)/gim, "<ubli>$1</ubli>") // sob
+      .replace(/^\s*\d+\.\s+(.*)/gim, "<obli>$1</obli>") // sob
+      .replace(/(<ubli>.*<\/ubli>(\n?))+/g, (match) => `<ul>${match.replace(/ubli/g, 'li')}</ul>`) // what am i doing
+      .replace(/(<obli>.*<\/obli>(\n?))+/g, (match) => `<ol>${match.replace(/obli/g, 'li')}</ol>`) // what am i doing
       .replace(/^> (.*$)/gim, "<blockquote>$1</blockquote>")
-      .replace(/^\s*-\s+(.*)/gim, "<li>$1</li>")
-      .replace(/^\s*\d+\.\s+(.*)/gim, "<li>$1</li>")
       .replace(/^---$/gim, "<hr/>")
+      .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/gim, "<em>$1</em>")
+      .replace(/_(.*?)_/gim, "<em>$1</em>")
       .replace(/`([^`]+)`/gim, "<p><code>$1</code></p>")
-      .replace(/\n/gim, "<br/>")
+
     return parsedHTML;
-  }
+  };
 
   const updatePreview = () => {
     previewContainer.innerHTML = parser(devlogTextContainer.value); // wowie parser
