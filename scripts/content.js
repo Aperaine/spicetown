@@ -201,7 +201,7 @@ function addDevlogImprovement() {
 
     html = html
       .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-      .replace(/^## (.*$)/gim, "<h2>$2</h2>")
+      .replace(/^## (.*$)/gim, "<h2>$1</h2>") // oops
       .replace(/^# (.*$)/gim, "<h1>$1</h1>")
       .replace(/^> (.*$)/gim, "<blockquote>$1</blockquote>")
       .replace(/^---$/gim, "<hr/>")
