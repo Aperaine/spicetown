@@ -299,6 +299,17 @@ function addKeybinds() { // :3
       })
     })
   }
+  const nDevlog = document.querySelector(".projects-show__container > .mt-4 > .btn.btn--brown");
+  if (nDevlog) {
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && !e.shiftKey && e.altKey && !e.metaKey) {
+        if (e.key === "n") {
+          e.preventDefault();
+          nDevlog.click();
+        }
+      }
+    })
+  }
 }
 
 // optimize via DRY principle :yay:
