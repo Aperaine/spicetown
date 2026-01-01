@@ -225,19 +225,20 @@ function addDevlogImprovement() {
       .replace(/^### (.*$)/gim, "<h3>$1</h3>")
       .replace(/^## (.*$)/gim, "<h2>$1</h2>") // oops
       .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-      .replace(/^> (.*$)/gim, "<blockquote>$1</blockquote>")
+      .replace(/^> (.*$)/gim, "<bq>$1</bq>") // temporary, then replace it :P
       .replace(/^---$/gim, "<hr/>")
       .replace(/^\s*-\s+(.*)/gim, "<ubli>$1</ubli>")
       .replace(/^\s*\d+\.\s+(.*)/gim, "<obli>$1</obli>");
 
     html = html
-      .replace(/(<ubli>.*<\/ubli>\n?)+/g, (m) => `<ul>${m.replace(/ubli/g, "li")}</ul>`)
-      .replace(/(<obli>.*<\/obli>\n?)+/g, (m) => `<ol>${m.replace(/obli/g, "li")}</ol>`);
+      .replace(/(<ubli>.*<\/ubli>\s*)+/g, (m) => `<ul>${m.replace(/ubli/g, "li")}</ul>`)
+      .replace(/(<obli>.*<\/obli>\s*)+/g, (m) => `<ol>${m.replace(/obli/g, "li")}</ol>`)
+      .replace(/(<bq>.*<\/bq>\s*)+/g, (m) => `<blockquote>${m.replace(/bq/g, "p")}</blockquote>`);
 
     html = html.split("\n").map(line => {
       const trimmed = line.trim();
       if (!trimmed) return ""; 
-      if (/^<(h[1-3]|ul|ol|li|blockquote|hr|pre)/i.test(trimmed)) return line;
+      if (/^<(h[1-3]|ul|ol|li|blockquote|bq|p|hr|pre)/i.test(trimmed)) return line;
       return `<p>${line}</p>`;
     }).join("\n");
 
@@ -246,6 +247,7 @@ function addDevlogImprovement() {
       .replace(/\*\*_(.*?)_\*\*/gim, "<strong><em>$1</em></strong>") // <emphasis></emphasis> sob
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/\_(.*?)\_/g, "<em>$1</em>")
       .replace(/~~(.*?)~~/g, "<del>$1</del>")
       .replace(/`([^`]+)`/g, "<code>$1</code>")
       .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />')
