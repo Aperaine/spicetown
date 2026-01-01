@@ -97,12 +97,7 @@ function addDevlogImprovement() {
   devlogTextContainer.after(devlogMdActions);
 
   // am too lazy to add it to every single one :P
-  devlogMdActions.addEventListener("click", (e) => {
-    const btnClicked = e.target.closest("button");
-    if (!btnClicked) return;
-
-    e.preventDefault();
-    const mdType = btnClicked.dataset.md; // oh wow i dont have to get attribute :D
+  const applyMarkdown = (mdType) => {
     const [selectStart, selectEnd] = [devlogTextContainer.selectionStart, devlogTextContainer.selectionEnd];
     const selectedText = devlogTextContainer.value.slice(selectStart, selectEnd);
     let insertText = "";
@@ -111,7 +106,7 @@ function addDevlogImprovement() {
 
     // first time using switch hope it goes well <3
     switch (mdType) {
-      case "italic":
+      case "italic": // TODO: fix parsing on this
         insertText = selectedText ? `_${selectedText}_` : '_MD Editor by Spicetown_';
         newSelectStart = selectStart + (selectedText ? 1 : 1);
         newSelectEnd = selectStart + insertText.length - 1;
@@ -141,7 +136,7 @@ function addDevlogImprovement() {
         newSelectStart = selectStart + (selectedText ? selectedText.length + 4 : 8);
         newSelectEnd = selectStart + 3;
         break;
-      case "blockquote":
+      case "blockquote": // TODO: fix parsing on this
         insertText = selectedText ? `> ${selectedText}` : '> MD Editor by Spicetown';
         newSelectStart = selectStart + (selectedText ? 2 : 2);
         newSelectEnd = selectStart + insertText.length;
@@ -165,11 +160,10 @@ function addDevlogImprovement() {
         newSelectStart = selectStart + (selectedText ? 1 : 1);
         newSelectEnd = selectStart + insertText.length - 1;
         break;
-      
       case "code-block":
         insertText = selectedText ? `\`\`\`\n${selectedText}\n\`\`\`` : '```\nMD Editor by Spicetown\n```';
-        newSelectStart = selectStart + (selectedText ? 1 : 1);
-        newSelectEnd = selectStart + insertText.length - 1;
+        newSelectStart = selectStart + 4;
+        newSelectEnd = selectStart + insertText.length - 4;
         break;
     }
 
@@ -177,7 +171,35 @@ function addDevlogImprovement() {
     devlogTextContainer.focus();
     devlogTextContainer.setSelectionRange(newSelectStart, newSelectEnd);
     updatePreview();
+  };
+
+  devlogMdActions.addEventListener("click", (e) => {
+    const btnClicked = e.target.closest("button");
+    if (!btnClicked) return;
+    e.preventDefault();
+    applyMarkdown(btnClicked.dataset.md);
   });
+
+  devlogTextContainer.addEventListener("keydown", (e) => {
+    if (!e.ctrlKey) return; // all shortcuts use ctrl so like yippee
+    const key = e.key.toLowerCase();
+    let type = null;
+    if (e.shiftKey && e.altKey && key === "c") type = "code-block";
+    else if (e.shiftKey && key === "l") type = "link";
+    else if (e.shiftKey && key === "i") type = "image";
+    else if (e.shiftKey && key === "b") type = "blockquote";
+    else if (e.shiftKey && key === "c") type = "inline-code";
+    else if (key === "i") type = "italic";
+    else if (key === "b") type = "bold";
+    else if (key === "l") type = "list";
+    else if (key === "k") type = "numbered-list";
+    else if (key === "h") type = "horizontal-line";
+
+    if (type) {
+      e.preventDefault();
+      applyMarkdown(type);
+    }
+  })
 
   const parentContainer = document.querySelector(".projects-new__form > .projects-new__card > .projects-new__field");
   parentContainer.classList.add("projects-new__devlog-text")
