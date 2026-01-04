@@ -858,7 +858,7 @@
 }
 
 /** Dracula THEME **/
-[data-theme="bg-color-dracula"] {
+[data-theme="bg-color-midnight"] {
   --bg-primary: #282a36;
   --text-primary: #f8f8f2;
   --text-highlight: #f8f8f2;
@@ -871,18 +871,18 @@
   --accent: #44475a;
   --accent-darker: #6272a4;
   --border-color: #44475a;
-  --accent-muted: #8be9fd;
-  --accent-semi-transparent: hsla(191, 97%, 77%, 0.3);
+  --accent-muted: #6272a4;
+  --accent-semi-transparent: #44475a4d;
 
   --kitchen-bar-border: #44475a;
   --kitchen-bar-bg: #1e1f29;
-  --kitchen-gradient: linear-gradient(90deg, #bd93f9 0%, #ff79c6 100%);
+  --kitchen-gradient: linear-gradient(90deg, #f8f8f2 0%, #6272a4 100%);
 
   --input-main-bg: #44475a;
   --input-sub-bg: #3b3e52;
   --input-sub-text: #f8f8f2;
 
-  --create-project-url: url("https://i.ibb.co/5WTFDMMT/Mask-group-22.png");
+  --create-project-url: url("https://i.ibb.co/zW5dFTfc/image.png");
   --projects-show-timeline-url: url('data:image/svg+xml,<svg width="8" height="90" viewBox="0 0 4 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="4" height="30" rx="2" fill="%23096b00"/></svg>');
 }
 
