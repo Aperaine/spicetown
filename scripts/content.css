@@ -883,7 +883,9 @@
   --input-sub-text: #f8f8f2;
 
   --create-project-url: url("https://i.ibb.co/zW5dFTfc/image.png");
-  --projects-show-timeline-url: url('data:image/svg+xml,<svg width="8" height="90" viewBox="0 0 4 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="4" height="30" rx="2" fill="%23096b00"/></svg>');
+    --projects-show-timeline-url: ursl(
+    'data:image/svg+xml,<svg width="8" height="90" viewBox="0 0 4 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="4" height="30" rx="2" fill="%23b88bee"/></svg>'
+  );
 }
 
 [data-theme] {
