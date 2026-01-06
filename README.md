@@ -204,6 +204,11 @@
 <h3 id="themes-charcoal">Charcoal</h4>
 <p><b>Charcoal</b> is the fourth theme added to <b>Spicetown</b> after Catppuccin <small>Macchiato</small>. Originally the theme would have everything on fire, but looked too much like a halloween theme than anything. Until more projects ship so I can test voting css, this is a work in progress.</p>
 
+<h3 id="themes-midnight">Midnight</h4>
+<p><b>Midnight</b> is the fifth theme added to <b>Spicetown</b> after charcoal <small>(made by Joko26)</small>. 
+This theme is designed to be a darkmode theme inspired by the darkk and cozy feel of the dracula themes.</p>
+
+
 <h2 id="installation">Installation</h2>
 <h3 id="from-source">From Source</h3>
 <p>Click on "code", then download the zip. Go to chrome://extensions (or the equivalent of that on your browser), unzip your file, and drag-in the folder.
